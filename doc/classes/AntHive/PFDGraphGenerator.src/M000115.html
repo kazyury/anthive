@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>generate (AntHive::PFDGraphGenerator)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File generators/pfd_graph.rb, line 106</span>
+                <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">generate</span>(<span class="ruby-identifier">real_path</span>,<span class="ruby-identifier">target</span>,<span class="ruby-identifier">options</span>,<span class="ruby-identifier">fake</span>)
+                        <span class="ruby-identifier">raise</span> <span class="ruby-constant">AntHiveError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-node">&quot;[ Bug ] Hive don't have route:[ #{target} ]@[ #{real_path} ] &quot;</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@hive</span>.<span class="ruby-identifier">registed_route?</span>(<span class="ruby-identifier">real_path</span>,<span class="ruby-identifier">target</span>,<span class="ruby-identifier">options</span>)
+
+                        <span class="ruby-ivar">@route</span>=<span class="ruby-ivar">@hive</span>.<span class="ruby-identifier">routes</span>(<span class="ruby-identifier">real_path</span>,<span class="ruby-identifier">target</span>,<span class="ruby-identifier">options</span>)
+      <span class="ruby-identifier">raise</span> <span class="ruby-constant">AntHiveError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-node">&quot;Route:[ #{target}@#{real_path} with #{options} ] is not registed.&quot;</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@route</span>
+                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;For requested route( #{target}@#{real_path} ), got [ #{route} ] route info.&quot;</span>}
+
+                        <span class="ruby-comment cmt">#@routeより,プロセスボックス(target)、データストア(property file=やavailable等によるファイル入出力(cvs含む))を抽出する。</span>
+      <span class="ruby-identifier">construct</span>(<span class="ruby-ivar">@route</span>)
+      <span class="ruby-identifier">graph</span>(<span class="ruby-identifier">fake</span>)
+      <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">outfile_svg</span>
+                <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

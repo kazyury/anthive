@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>runtime_path (AntHive::Evaluater)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File evaluater.rb, line 684</span>
+                <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">runtime_path</span>(<span class="ruby-identifier">file</span>)
+                        <span class="ruby-identifier">raise</span> <span class="ruby-constant">AntHiveError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">&quot;@root_directory is not set.&quot;</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@root_directory</span>
+                        <span class="ruby-identifier">raise</span> <span class="ruby-constant">AntHiveError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">&quot;@basedir is not set.&quot;</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@basedir</span>
+
+                        <span class="ruby-comment cmt"># 指定されたfileが絶対パス指定の場合には、先頭に@root_directoryのみをセットして返却</span>
+                        <span class="ruby-keyword kw">if</span> <span class="ruby-regexp re">/\A\//</span><span class="ruby-operator">=~</span><span class="ruby-identifier">file</span>
+                                <span class="ruby-identifier">rt_path</span>=<span class="ruby-identifier">file</span>[<span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span>]
+                        <span class="ruby-keyword kw">else</span>
+                                <span class="ruby-identifier">rt_path</span>=<span class="ruby-ivar">@basedir</span><span class="ruby-operator">+</span><span class="ruby-value str">&quot;/&quot;</span><span class="ruby-operator">+</span><span class="ruby-ivar">@expand_basedir</span>.<span class="ruby-identifier">to_s</span><span class="ruby-operator">+</span><span class="ruby-value str">&quot;/&quot;</span><span class="ruby-operator">+</span><span class="ruby-identifier">file</span>
+                        <span class="ruby-keyword kw">end</span>
+                        <span class="ruby-keyword kw">begin</span>
+                                <span class="ruby-constant">RealPath</span>.<span class="ruby-identifier">realpath</span>(<span class="ruby-ivar">@root_directory</span>,<span class="ruby-identifier">rt_path</span>)
+                        <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">AntHiveError</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
+                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">warn</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-identifier">e</span>.<span class="ruby-identifier">message</span>}
+                                <span class="ruby-ivar">@root_directory</span><span class="ruby-operator">+</span><span class="ruby-value str">&quot;/&quot;</span><span class="ruby-operator">+</span><span class="ruby-ivar">@basedir</span><span class="ruby-operator">+</span><span class="ruby-value str">&quot;/&quot;</span><span class="ruby-operator">+</span><span class="ruby-identifier">file</span>
+                        <span class="ruby-keyword kw">end</span>
+                <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

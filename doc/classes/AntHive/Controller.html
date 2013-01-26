@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: AntHive::Controller</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">AntHive::Controller</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../files/controller_rb.html">
+                controller.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+                Object
+            </td>
+        </tr>
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+<a href="../AntHive.html">AntHive</a>の動作制御を行う。
+</p>
+
+    </div>
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000106">evaluate</a>&nbsp;&nbsp;
+      <a href="#M000107">generate_map_graph</a>&nbsp;&nbsp;
+      <a href="#M000109">generate_pfd</a>&nbsp;&nbsp;
+      <a href="#M000108">generate_route</a>&nbsp;&nbsp;
+      <a href="#M000099">new</a>&nbsp;&nbsp;
+      <a href="#M000105">parse</a>&nbsp;&nbsp;
+      <a href="#M000102">request_for_map</a>&nbsp;&nbsp;
+      <a href="#M000103">request_for_route</a>&nbsp;&nbsp;
+      <a href="#M000101">root_directory=</a>&nbsp;&nbsp;
+      <a href="#M000104">run</a>&nbsp;&nbsp;
+      <a href="#M000100">ui=</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+    <div id="attribute-list">
+      <h3 class="section-bar">Attributes</h3>
+
+      <div class="name-list">
+        <table>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">hive</td>
+          <td class="context-item-value">&nbsp;[R]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        </table>
+      </div>
+    </div>
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Class methods</h3>
+
+      <div id="method-M000099" class="method-detail">
+        <a name="M000099"></a>
+
+        <div class="method-heading">
+          <a href="Controller.src/M000099.html" target="Code" class="method-signature"
+            onclick="popupCode('Controller.src/M000099.html');return false;">
+          <span class="method-name">new</span><span class="method-args">(fake)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000106" class="method-detail">
+        <a name="M000106"></a>
+
+        <div class="method-heading">
+          <a href="Controller.src/M000106.html" target="Code" class="method-signature"
+            onclick="popupCode('Controller.src/M000106.html');return false;">
+          <span class="method-name">evaluate</span><span class="method-args">(file_path,target,options)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+動的経路の評価を開始する。
+antのxmlファイル名、ターゲット名(nilの場合には、default属性で指定されたターゲット)、及びオプション値(Hash)を引数にとる。
+<a href="Controller.html#M000101">root_directory=</a>
+にて基点ディレクトリが設定されていない場合には、AntHiveError例外がraiseする。
+</p>
+<dl>
+<dt>file_path</dt><dd>経路評価対象のXMLファイルの仮想ルートディレクトリからの相対パス文字列
+
+</dd>
+<dt>target</dt><dd>経路評価対象の始点ターゲット名(nilの場合には、経路評価対象XMLファイルのdefault属性で指定されたターゲット)
+
+</dd>
+<dt>options</dt><dd>実行時に与えられるプロパティ名⇒値のHash
+
+</dd>
+<dt>returns</dt><dd>評価の始点となったターゲット名
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000107" class="method-detail">
+        <a name="M000107"></a>
+
+        <div class="method-heading">
+          <a href="Controller.src/M000107.html" target="Code" class="method-signature"
+            onclick="popupCode('Controller.src/M000107.html');return false;">
+          <span class="method-name">generate_map_graph</span><span class="method-args">(file_path)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+静的解析MAPを生成する。
+実際には、AntHive::MapGraphGeneratorによる処理の依頼と、MapGraphGeneratorにて解決不能なファイル名(※)の解決のためのインタフェースを提供する。
+※
+(未使用を含む)全ターゲットをMAPに出力するためには、MAP生成は経路評価に基づかずに行う必要があるため、
+MAP生成の際にはプロパティ等で指定されたXMLファイル名の解決が行えない。
+そのためユーザによる<a
+href="MapGraphGenerator.html">MapGraphGenerator</a>への助力が必要となる。
+</p>
+<dl>
+<dt>file_path</dt><dd>静的解析MAPを出力する対象のXMLファイル名(仮想ルートディレクトリからの相対パス)
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000109" class="method-detail">
+        <a name="M000109"></a>
+
+        <div class="method-heading">
+          <a href="Controller.src/M000109.html" target="Code" class="method-signature"
+            onclick="popupCode('Controller.src/M000109.html');return false;">
+          <span class="method-name">generate_pfd</span><span class="method-args">(route)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+経路情報のPFDを生成する。
+実際には、AntHive::PFDGraphGeneratorによる処理の依頼を行う。
+</p>
+<dl>
+<dt>route</dt><dd>&quot;route出力する対象XMLファイル、ターゲット名、オプション(hash)&quot;の配列。対象XMLファイル名は仮想ルートディレクトリからの相対パスで指定される必要がある。
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000108" class="method-detail">
+        <a name="M000108"></a>
+
+        <div class="method-heading">
+          <a href="Controller.src/M000108.html" target="Code" class="method-signature"
+            onclick="popupCode('Controller.src/M000108.html');return false;">
+          <span class="method-name">generate_route</span><span class="method-args">(route)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+動的評価経路情報を生成する。
+実際には、AntHive::RouteTraceGeneratorによる処理の依頼を行う。
+</p>
+<dl>
+<dt>route</dt><dd>&quot;route出力する対象XMLファイル、ターゲット名、オプション(hash)&quot;の配列。対象XMLファイル名は仮想ルートディレクトリからの相対パスで指定される必要がある。
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000105" class="method-detail">
+        <a name="M000105"></a>
+
+        <div class="method-heading">
+          <a href="Controller.src/M000105.html" target="Code" class="method-signature"
+            onclick="popupCode('Controller.src/M000105.html');return false;">
+          <span class="method-name">parse</span><span class="method-args">(file_path)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+指定されたファイルの静的解析を実行しその結果を<a
+href="Hive.html">Hive</a>に格納する。
+解析結果の参照については、AntHive::Hiveを参照のこと。 <a
+href="Controller.html#M000101">root_directory=</a>
+にて基点ディレクトリが設定されていない場合には、AntHiveError例外がraiseする。
+</p>
+<dl>
+<dt>file_path</dt><dd>静的解析対象のXMLファイルの仮想ルートディレクトリからの相対パス文字列
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000102" class="method-detail">
+        <a name="M000102"></a>
+
+        <div class="method-heading">
+          <a href="Controller.src/M000102.html" target="Code" class="method-signature"
+            onclick="popupCode('Controller.src/M000102.html');return false;">
+          <span class="method-name">request_for_map</span><span class="method-args">(maplist)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Antファイルの解析とmapの生成依頼を受け入れる。 maplist は
+ファイル名の配列である事が期待されている。
+</p>
+<dl>
+<dt>maplist</dt><dd>map出力する対象XMLファイル名の配列。対象XMLファイル名は仮想ルートディレクトリからの相対パスで指定される必要がある。
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000103" class="method-detail">
+        <a name="M000103"></a>
+
+        <div class="method-heading">
+          <a href="Controller.src/M000103.html" target="Code" class="method-signature"
+            onclick="popupCode('Controller.src/M000103.html');return false;">
+          <span class="method-name">request_for_route</span><span class="method-args">(routelist)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Antファイルの解析とrouteの生成依頼を受け入れる。 routelist は [
+&quot;ファイル名&quot; ,&quot;ターゲット名&quot;,
+{&quot;key1&quot;=&gt;&quot;val1&quot;,&quot;key2&quot;=&gt;&quot;val2&quot;},
+PFD出力要否 ] の配列である事が期待されている。
+</p>
+<dl>
+<dt>routelist</dt><dd>「&quot;route出力する対象XMLファイル、ターゲット名、オプション(hash)、PFD出力要否&quot;の配列」の配列。対象XMLファイル名は仮想ルートディレクトリからの相対パスで指定される必要がある。
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000101" class="method-detail">
+        <a name="M000101"></a>
+
+        <div class="method-heading">
+          <a href="Controller.src/M000101.html" target="Code" class="method-signature"
+            onclick="popupCode('Controller.src/M000101.html');return false;">
+          <span class="method-name">root_directory=</span><span class="method-args">(dir)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+解析するantファイル群のrootディレクトリを指定する。
+評価は、ここで指定されたrootディレクトリを基点とし、project
+のbasedir属性を加味したうえで行われる。
+存在しないディレクトリパスを指定した場合には例外AntHiveErrorが生じる。
+</p>
+<dl>
+<dt>dir</dt><dd>解析するantファイル群の仮想ルートディレクトリのパスを示す文字列
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000104" class="method-detail">
+        <a name="M000104"></a>
+
+        <div class="method-heading">
+          <a href="Controller.src/M000104.html" target="Code" class="method-signature"
+            onclick="popupCode('Controller.src/M000104.html');return false;">
+          <span class="method-name">run</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+指定されたmap,route の出力を開始する。
+</p>
+<ol>
+<li>判明している限りの静的解析対象ファイルの一覧を生成する。
+
+</li>
+<li>判明している全ての静的解析対象ファイルを解析する。
+
+</li>
+<li>指定された動的経路の評価を行う。(その過程で追加の解析を行う場合がある)
+
+</li>
+<li>指定されたrouteの出力を実施する。
+
+</li>
+<li>指定されたmapの出力を実施する。(その際に名前解決にUIへの問い合わせを行う)
+
+</li>
+</ol>
+        </div>
+      </div>
+
+      <div id="method-M000100" class="method-detail">
+        <a name="M000100"></a>
+
+        <div class="method-heading">
+          <a href="Controller.src/M000100.html" target="Code" class="method-signature"
+            onclick="popupCode('Controller.src/M000100.html');return false;">
+          <span class="method-name">ui=</span><span class="method-args">(ui)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+ユーザインタフェースを登録する。
+</p>
+<dl>
+<dt>ui</dt><dd><a href="CUI.html">AntHive::CUI</a> インスタンス(現状では<a
+href="CUI.html">CUI</a>のみ)
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

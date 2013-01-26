@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>jump (AntHive::Evaluater)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File evaluater.rb, line 477</span>
+                <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">jump</span>(<span class="ruby-identifier">next_file</span>,<span class="ruby-identifier">next_target</span>,<span class="ruby-identifier">element</span>,<span class="ruby-identifier">replacement</span>,<span class="ruby-identifier">without_toplevel</span>=<span class="ruby-keyword kw">false</span>)
+                        <span class="ruby-comment cmt">###############################################</span>
+                        <span class="ruby-comment cmt"># next_fileがまだ未解析の場合には解析を行う。</span>
+                        <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@hive</span>.<span class="ruby-identifier">registed_map?</span>(<span class="ruby-identifier">next_file</span>)
+                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;[ #{next_file} ] is not registered in hive.Requesting to controller for parse.&quot;</span>}
+                                <span class="ruby-ivar">@controller</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-constant">RelativePath</span>.<span class="ruby-identifier">between</span>(<span class="ruby-ivar">@root_directory</span>,<span class="ruby-identifier">next_file</span>))
+                        <span class="ruby-keyword kw">else</span>
+                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;[ #{next_file} ] is already registered in Hive.&quot;</span>}
+                        <span class="ruby-keyword kw">end</span>
+
+                        <span class="ruby-comment cmt">###############################################</span>
+                        <span class="ruby-comment cmt"># 次のEvaluaterに渡すためのPropertyTableを準備</span>
+                        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">element</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'inheritAll'</span>]<span class="ruby-operator">==</span><span class="ruby-value str">'false'</span>
+                                <span class="ruby-identifier">next_table</span>=<span class="ruby-constant">PropertyTable</span>.<span class="ruby-identifier">new</span>
+                        <span class="ruby-keyword kw">else</span>
+                                <span class="ruby-identifier">next_table</span>=<span class="ruby-ivar">@table</span>.<span class="ruby-identifier">deep_copy</span>
+                        <span class="ruby-keyword kw">end</span>
+
+                        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">element</span>.<span class="ruby-identifier">has_elements?</span>
+                                <span class="ruby-identifier">element</span>.<span class="ruby-identifier">elements</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">elm</span><span class="ruby-operator">|</span>
+                                        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">elm</span>.<span class="ruby-identifier">name</span><span class="ruby-operator">==</span><span class="ruby-value str">'property'</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">elm</span>.<span class="ruby-identifier">name</span><span class="ruby-operator">==</span><span class="ruby-value str">'param'</span>
+                                                <span class="ruby-identifier">node_start_tag</span>(<span class="ruby-identifier">elm</span>,<span class="ruby-identifier">replacement</span>)
+                                                <span class="ruby-identifier">evaluate_property</span>(<span class="ruby-identifier">elm</span>,<span class="ruby-identifier">replacement</span>,<span class="ruby-keyword kw">false</span>,<span class="ruby-identifier">next_table</span>)
+                                                <span class="ruby-identifier">node_end_tag</span>(<span class="ruby-identifier">elm</span>,<span class="ruby-identifier">replacement</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">elm</span>.<span class="ruby-identifier">has_elements?</span>
+                                        <span class="ruby-keyword kw">else</span>
+                                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">error</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;THIS TASK:[ #{elm.name} ] (ANTCALL'S CHILDREN) IS NOT IMPLEMENTED.&quot;</span>}
+                                        <span class="ruby-keyword kw">end</span>
+                                }
+                        <span class="ruby-keyword kw">end</span>
+
+                        <span class="ruby-comment cmt">###############################################</span>
+                        <span class="ruby-comment cmt"># 次のEvaluaterを生成して処理をさせる。</span>
+                        <span class="ruby-identifier">evaluater</span>=<span class="ruby-constant">Evaluater</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@controller</span>,<span class="ruby-ivar">@root_directory</span>,<span class="ruby-identifier">next_file</span>,<span class="ruby-identifier">next_table</span>,<span class="ruby-ivar">@basedir</span>)
+                        <span class="ruby-identifier">evaluater</span>.<span class="ruby-identifier">without_toplevel_eval</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">without_toplevel</span>
+
+                        <span class="ruby-identifier">steps</span>=<span class="ruby-identifier">evaluater</span>.<span class="ruby-identifier">evaluate</span>(<span class="ruby-identifier">next_target</span>)
+                        <span class="ruby-ivar">@steps</span><span class="ruby-operator">+=</span><span class="ruby-identifier">steps</span>
+                <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

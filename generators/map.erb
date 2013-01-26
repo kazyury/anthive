@@ -1,0 +1,12 @@
+digraph G {
+	graph [ rankdir=LR];
+	node  [ shape=rect, fontsize=10];
+	edge  [ arrowhead=vee, fontsize=8 ];
+	""    [ style = invis ];
+
+<% @clusters.each do |clust,nodes| %>
+<%= write_cluster(clust,nodes) %>
+<% end %>
+
+<%= write_edges %>
+}

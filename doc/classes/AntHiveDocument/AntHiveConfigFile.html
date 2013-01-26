@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: AntHiveDocument::AntHiveConfigFile</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">AntHiveDocument::AntHiveConfigFile</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../files/document_rb.html">
+                document.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+                Object
+            </td>
+        </tr>
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <h2>About &#8216;ant-hive.xml&#8216;</h2>
+<p>
+ant-hive.(rb|exe) の隣には、ant-hive.xml が存在することと思います。
+このXMLフォーマットの構成ファイルには、あなたが探索するhiveの情報を保管してください。
+hive情報を保管することで、あとから何度でも同一の探索を行うことが可能となります。
+また、-rオプション+(-M
+-R)オプションでは、指定することの出来なかった実行時プロパティもこのant-hive.xmlを
+用いることで指定することが可能です。
+Authorはant-hiveを-Hオプションで使用するこの方法がもっとも使いやすいのではないかと考えています。
+</p>
+<h3>Elements of &#8216;ant-hive.xml&#8216;</h3>
+<p>
+ant-hive.xmlには特段DTDも何も定義されていません。それほど難しいものではないからです。
+この構成ファイルのroot要素は、anthiveです。
+</p>
+<ul>
+<li>anthive要素の子要素は、hive
+要素のみです。1つのhiveがあなたの探索したい1つの巣を表現しています。
+
+<ul>
+<li>hive要素には属性として name 属性を指定する必要があります。
+hiveのname属性こそが、コマンドラインからant-hive -H
+を入力した後に続けるべき名前です。
+
+</li>
+</ul>
+</li>
+<li>hive要素は、子要素としてroot_directory要素、map要素、route要素を持ちえます。
+
+<ul>
+<li>root_directory要素は1 hiveにつき1つ必要です。
+path属性で、解析すべきant(*.xml)や関連するプロパティ(*.properties)の実行時ツリーを保管したディレクトリを、
+ant-hiveからの相対パスで指定してください。コレは必須の属性です。
+
+</li>
+<li>map要素は1 hiveにつき0～N 個定義できます。
+file属性で静的解析情報を出力したいantを指定してください。なお、file属性で指定する際には、
+root_directory要素で指定したpathからの相対パスで指定してください。
+
+</li>
+<li>route要素は1 hiveにつき0～N 個定義できます。
+route要素は3つの属性を持ちえます。
+
+<dl>
+<dt>file属性</dt><dd>動的経路情報を出力したいantを指定してください。route要素を記述する際にはこの属性は必須です。
+
+</dd>
+<dt>target属性</dt><dd>file属性で指定したantの、最初に実行すべきtargetを指定してください。
+この属性が未設定の場合には、経路評価を行うantのなかでdefaultで指定されたtargetを動的評価の開始点とします。
+
+</dd>
+<dt>options属性</dt><dd>動的経路解析をする際に与えるオプションを指定してください。
+現実装ではプロパティを設定すること(-D相当)しか出来ません。
+今後の実装でもその他のオプションを理解できるようにはならないでしょう。;-)
+指定の方法は、key=val です。複数のプロパティを指定するには、key=val
+のセットをカンマで接続してください。
+
+</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+<h3>Insight &#8216;ant-hive.xml&#8216;</h3>
+<p>
+最初のant-hive.xmlはこのようになっていると思います。
+</p>
+<pre>
+  &lt;?xml version=&quot;1.0&quot; encoding=&quot;Shift_JIS&quot; ?&gt;
+  &lt;anthive&gt;
+       &lt;!--
+  ant-hive configuration file
+
+  このXMLファイルにはant-hiveを動作させる際のオプションを、
+  hive要素に記述することが出来ます。
+  hive要素は複数保管することが可能ですので、用途に応じて使い分けてください。
+
+  conf要素の子要素として以下の要素が使用可能です。
+       (必須) root_directory要素
+                               Antスクリプト、各種プロパティファイル等を実行時環境と同様のディレクトリ・ツリー構成
+                               で格納した最上位のディレクトリをpath属性を用いて指定します。
+                               プロパティ等で参照しているパスが、ここで指定したroot_directoryを超えて外に飛び出す場合には、例外が生じます。
+
+       (任意) map要素
+                               Antスクリプトの静的構造図(mapと呼びます)を出力する対象のファイル名を、root_directory要素で
+                               指定したパスからの相対パスで指定します。(file属性)
+                               mapでは各target内のproperty値の判断などは行いません。通りうる全パスを出力します。
+
+       (任意) route要素
+                               特定のTargetからの動的経路(routeと呼びます)を出力する際の、基点となるファイル名、ターゲット名、オプション
+                               を指定します。
+                               各々の指定には以下の属性を使用します。
+                               ファイル名  ：file   属性(root_directoryからの相対パス)
+                               ターゲット名：target 属性
+                               経路情報のDiagram出力も有効にする場合には、with_diagram属性を&quot;true&quot;に設定してください。
+
+                               子要素としてoptions要素を複数持つ事が可能です。
+                               options要素は、key と val 属性を持ちます。
+
+       --&gt;
+
+       &lt;hive name=&quot;sample&quot;&gt;
+               &lt;root_directory path=&quot;sample&quot; /&gt;
+
+               &lt;!-- build.xml のMAPを出力 --&gt;
+               &lt;map file=&quot;build.xml&quot; /&gt;
+
+               &lt;!-- build.xml のreleaseターゲットから開始するROUTEを出力
+           options 付き
+           (ant -Dexerb.core=&quot;E:/....../ruby185c.exc&quot; release と同値)
+               --&gt;
+               &lt;route file=&quot;build.xml&quot; target=&quot;release&quot; with_diagram=&quot;true&quot; &gt;
+                       &lt;options key=&quot;exerb.core&quot; val=&quot;E:/softwares/ruby/share/exerb/ruby185c.exc&quot; /&gt;
+               &lt;/route&gt;
+
+               &lt;!-- build.xml のgenerate_exeターゲットから開始するROUTEを出力 --&gt;
+               &lt;route file=&quot;build.xml&quot; target=&quot;generate_exe&quot; /&gt;
+       &lt;/hive&gt;
+  &lt;/anthive&gt;
+</pre>
+<p>
+下の方に、&lt;hive name=&quot;sample&quot;&gt;
+要素だけが定義されているので、この時点ではant-hive -H sample のみが
+使用可能な定義情報です。
+このhive要素には、以下の子ノードが定義されています。
+</p>
+<dl>
+<dt>root_directory path=&quot;sample&quot;</dt><dd>これは、ant-hiveが存在するディレクトリにsampleディレクトリが存在し、
+そのディレクトリを仮想的なルートディレクトリとすることを指定しています。
+この仮想ルートディレクトリ以下に、ツリー構造を維持したままantファイルとプロパティファイル類が配置されていると想定します。
+
+</dd>
+<dt>map file=&quot;build.xml&quot;</dt><dd>これはbuild.xmlファイルの静的構造を出力することを指示しています。
+ただし、root_directoryで指定されたディレクトリからの相対パスであることをお忘れなく。
+この例では、実際には`PWD`/sample/build.xml
+ファイルの解析を行うことを指定しています。
+
+</dd>
+<dt>route file=&quot;build.xml&quot; target=&quot;release&quot;</dt><dd>これはbuild.xmlファイルのreleaseターゲットを開始点として動的経路を評価することを指示しています。
+map要素と同様に、build.xmlの実際のパスは`PWD`/sample/build.xml となります。
+
+</dd>
+<dt>route file=&quot;build.xml&quot; target=&quot;generate_exe&quot;</dt><dd>これはbuild.xmlファイルのgenerate_exe&#8230;(以下同文)。
+
+</dd>
+</dl>
+<p>
+これらの定義から、ant-hive -H sample
+を実行したときには、以下のような挙動を示します。
+</p>
+<ol>
+<li>`PWD`/sample/build.xml の静的解析を実施します。
+
+</li>
+<li>次に、`PWD`/sample/build.xml のreleaseターゲットを開始点として、
+特にオプションが指定されていないものとして動的経路情報を評価します。
+今回は、既にbuild.xmlが解析されているので再解析は実施しませんが、まだ解析されていないファイルが指定された
+場合には、解析処理が自動で実施されます。
+
+</li>
+<li>次に、`PWD`/sample/build.xml
+のgenerate_exeターゲットを開始点として&#8230;(以下同文)。
+
+</li>
+</ol>
+<p>
+動的経路評価の過程で他のantファイルに制御が移るような場合には、必要に応じて再解析が実施されます。
+ただし、静的構造が出力されることが保障されるのは、mapオプションで指定している場合に限られることを忘れないでください。
+</p>
+
+    </div>
+
+
+   </div>
+
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

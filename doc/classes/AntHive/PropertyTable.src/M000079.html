@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>expand (AntHive::PropertyTable)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File property_table.rb, line 96</span>
+                <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">expand</span>(<span class="ruby-identifier">str</span>)
+                        <span class="ruby-identifier">raise</span> <span class="ruby-constant">AntHiveError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-node">&quot;[ #{str} ] is not String but [ #{str.class} ].&quot;</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">str</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>)
+                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;expanding [ #{str} ].&quot;</span>}
+
+                        <span class="ruby-comment cmt"># expandable?でなければ、その値をそのまま返却</span>
+                        <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">str</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">expandable?</span>(<span class="ruby-identifier">str</span>)
+
+                        <span class="ruby-identifier">re_scan</span>=<span class="ruby-keyword kw">false</span>
+                        <span class="ruby-comment cmt"># expandables のそれぞれについて処理を行う。</span>
+                        <span class="ruby-comment cmt">#</span>
+                        <span class="ruby-identifier">expandables</span>(<span class="ruby-identifier">str</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">chunk</span><span class="ruby-operator">|</span>
+                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Check for chunk:[ #{chunk} ].&quot;</span>}
+
+                                <span class="ruby-identifier">replace_pattern</span>=<span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">escape</span>(<span class="ruby-value str">'${'</span><span class="ruby-operator">+</span><span class="ruby-identifier">chunk</span><span class="ruby-operator">+</span><span class="ruby-value str">'}'</span>))
+                                <span class="ruby-identifier">replace_string</span>=<span class="ruby-ivar">@table</span>[<span class="ruby-identifier">chunk</span>]
+                                
+                                <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">replace_string</span>   <span class="ruby-comment cmt">#@tableに見つかった場合</span>
+                                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Value found for chunk:[ #{chunk} ].&quot;</span>}
+                                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Using [ #{replace_string} ] for [ #{replace_pattern} ], expand [ #{str} ].&quot;</span>}
+
+                                        <span class="ruby-comment cmt"># 無限変換防止</span>
+                                        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">replace_string</span>[<span class="ruby-value">2</span><span class="ruby-operator">..</span><span class="ruby-value">-2</span>] <span class="ruby-operator">==</span> <span class="ruby-identifier">chunk</span>
+                                        <span class="ruby-keyword kw">else</span>
+                                                <span class="ruby-identifier">re_scan</span>=<span class="ruby-keyword kw">true</span>
+                                                <span class="ruby-identifier">str</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-identifier">replace_pattern</span>,<span class="ruby-identifier">replace_string</span>)
+                                        <span class="ruby-keyword kw">end</span>
+                                
+                                <span class="ruby-keyword kw">else</span>        <span class="ruby-comment cmt">#@tableに見つからない場合</span>
+                                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Tended to expand [ #{chunk} ] ,but none in property table.&quot;</span>}
+                                <span class="ruby-keyword kw">end</span>
+                        <span class="ruby-keyword kw">end</span>
+                        
+                        <span class="ruby-comment cmt"># 展開結果が更に展開可能ならば再帰的に処理を行う</span>
+                        <span class="ruby-identifier">expand</span>(<span class="ruby-identifier">str</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">expandable?</span>(<span class="ruby-identifier">str</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">re_scan</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">true</span>
+
+                        <span class="ruby-identifier">str</span>
+                <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

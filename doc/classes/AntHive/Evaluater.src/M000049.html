@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>node_end_tag (AntHive::Evaluater)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File evaluater.rb, line 221</span>
+                <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">node_end_tag</span>(<span class="ruby-identifier">target_node</span>,<span class="ruby-identifier">replacement</span>={})
+                        <span class="ruby-identifier">tag_name</span>=<span class="ruby-identifier">target_node</span>.<span class="ruby-identifier">name</span>
+                        <span class="ruby-identifier">evs</span>=<span class="ruby-constant">EvaluatedStep</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@project</span>.<span class="ruby-identifier">real_path</span>,<span class="ruby-node">&quot;&lt;/#{tag_name}&gt;&quot;</span>,<span class="ruby-identifier">:step</span>)
+                        <span class="ruby-ivar">@steps</span>.<span class="ruby-identifier">push</span> <span class="ruby-identifier">evs</span>
+                <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>routes (AntHive::Hive)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File hive.rb, line 72</span>
+                <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">routes</span>(<span class="ruby-identifier">file</span>,<span class="ruby-identifier">entry_point</span>,<span class="ruby-identifier">options</span>)
+                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">warn</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Requested route (File:[ #{file} ] EntryPoint:[ #{entry_point} ]) is not set.&quot;</span>} <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">registed_route?</span>(<span class="ruby-identifier">file</span>,<span class="ruby-identifier">entry_point</span>,<span class="ruby-identifier">options</span>)
+                        <span class="ruby-ivar">@routes</span>.<span class="ruby-identifier">find_all</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">r</span><span class="ruby-operator">|</span> <span class="ruby-identifier">r</span>.<span class="ruby-identifier">file</span><span class="ruby-operator">==</span><span class="ruby-identifier">file</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">r</span>.<span class="ruby-identifier">entry_point</span><span class="ruby-operator">==</span><span class="ruby-identifier">entry_point</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">r</span>.<span class="ruby-identifier">same_option?</span>(<span class="ruby-identifier">options</span>)}.<span class="ruby-identifier">first</span>
+                <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>graph (AntHive::MapGraphGenerator)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File generators/map_graph.rb, line 67</span>
+                <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">graph</span>(<span class="ruby-identifier">fake</span>)
+                        <span class="ruby-identifier">out_dot_file</span>=<span class="ruby-ivar">@root_directory</span><span class="ruby-operator">+</span><span class="ruby-value str">'.dot'</span>
+                        <span class="ruby-identifier">out_svg_file</span>=<span class="ruby-ivar">@root_directory</span><span class="ruby-operator">+</span><span class="ruby-value str">'.svg'</span>
+                        <span class="ruby-identifier">template</span>=<span class="ruby-constant">ERB</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>(<span class="ruby-value str">'./generators/map.erb'</span>))
+
+                        <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">fake</span>
+                                <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">out_dot_file</span>,<span class="ruby-value str">'w'</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">puts</span> <span class="ruby-identifier">template</span>.<span class="ruby-identifier">result</span>(<span class="ruby-identifier">binding</span>) }
+
+                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;converting [ #{out_dot_file} ] into [ #{out_svg_file} ]. &quot;</span>}
+                                <span class="ruby-identifier">system</span>(<span class="ruby-node">&quot;dot -Tsvg #{out_dot_file} -o #{out_svg_file}&quot;</span>)
+                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">error</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;may not installed graphviz ? converting #{out_dot_file} was failed. &quot;</span>} <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">$?</span><span class="ruby-operator">==</span><span class="ruby-value">0</span>
+                        <span class="ruby-keyword kw">end</span>
+                        <span class="ruby-identifier">out_svg_file</span>
+                <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

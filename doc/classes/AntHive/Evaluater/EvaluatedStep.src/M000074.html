@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>each_line (AntHive::Evaluater::EvaluatedStep)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File evaluater.rb, line 101</span>
+                        <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">each_line</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">b</span>)
+                                <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">split</span>(<span class="ruby-value str">&quot;\n&quot;</span>).<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>
+                                        <span class="ruby-keyword kw">yield</span> <span class="ruby-identifier">line</span>
+                                }
+                        <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

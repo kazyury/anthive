@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>new (AntHive::Evaluater)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File evaluater.rb, line 118</span>
+                <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">controller</span>,<span class="ruby-identifier">root_dir</span>,<span class="ruby-identifier">antfile</span>,<span class="ruby-identifier">property_table</span>=<span class="ruby-keyword kw">nil</span>,<span class="ruby-identifier">basedir</span>=<span class="ruby-keyword kw">nil</span>)
+                        <span class="ruby-ivar">@logger</span>=<span class="ruby-constant">SingletonLogger</span>.<span class="ruby-identifier">instance</span>()
+                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;#{self.class} initializing with controller:[ #{controller.class} ],root_dir:[ #{root_dir} ],antfile:[ #{antfile} ].&quot;</span>}
+                        <span class="ruby-ivar">@controller</span>=<span class="ruby-identifier">controller</span>
+                        <span class="ruby-ivar">@hive</span>=<span class="ruby-ivar">@controller</span>.<span class="ruby-identifier">hive</span>
+                        <span class="ruby-ivar">@root_directory</span>=<span class="ruby-identifier">root_dir</span>
+                        <span class="ruby-ivar">@project</span>=<span class="ruby-ivar">@hive</span>.<span class="ruby-identifier">maps</span>[<span class="ruby-identifier">antfile</span>]
+                        <span class="ruby-ivar">@default</span>=<span class="ruby-ivar">@project</span>.<span class="ruby-identifier">default</span>
+                        <span class="ruby-identifier">property_table</span> <span class="ruby-value">? </span><span class="ruby-ivar">@table</span>=<span class="ruby-identifier">property_table</span> <span class="ruby-operator">:</span> <span class="ruby-ivar">@table</span>=<span class="ruby-constant">PropertyTable</span>.<span class="ruby-identifier">new</span>()
+
+                        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">basedir</span>
+                                <span class="ruby-ivar">@basedir</span>=<span class="ruby-identifier">basedir</span>
+                        <span class="ruby-keyword kw">else</span>
+                                <span class="ruby-identifier">antfilepath</span>=<span class="ruby-constant">File</span>.<span class="ruby-identifier">dirname</span>(<span class="ruby-constant">RelativePath</span>.<span class="ruby-identifier">between</span>(<span class="ruby-ivar">@root_directory</span>,<span class="ruby-identifier">antfile</span>))
+                                <span class="ruby-ivar">@basedir</span>=<span class="ruby-identifier">antfilepath</span><span class="ruby-operator">+</span><span class="ruby-value str">&quot;/&quot;</span><span class="ruby-operator">+</span><span class="ruby-ivar">@project</span>.<span class="ruby-identifier">basedir</span> <span class="ruby-comment cmt"># basedirは最初のAntのみ評価する。</span>
+                                <span class="ruby-ivar">@expand_basedir</span>=<span class="ruby-ivar">@project</span>.<span class="ruby-identifier">basedir</span> <span class="ruby-comment cmt"># basedir_expandは最初のAntのみ評価する。</span>
+                        <span class="ruby-keyword kw">end</span>
+
+                        <span class="ruby-ivar">@options</span>=[]
+                        <span class="ruby-ivar">@steps</span>=[] <span class="ruby-comment cmt"># EvaluatedStepの配列</span>
+                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;#{self.class} initiated.&quot;</span>}
+                <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

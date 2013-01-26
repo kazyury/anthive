@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>to_s (AntHive::Evaluater::EvaluatedStep)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File evaluater.rb, line 65</span>
+                        <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">to_s</span>
+                                <span class="ruby-keyword kw">case</span> <span class="ruby-ivar">@tag</span>
+                                <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:toplevel_start</span>
+                                        <span class="ruby-node">&quot;TOPLEVEL @ #{@antpath}&quot;</span>
+                                <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:toplevel_end</span>
+                                        <span class="ruby-node">&quot;END OF TOPLEVEL @ #{@antpath}&quot;</span>
+                                <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:target_start</span>
+                                        <span class="ruby-node">&quot;Entering target: #{@node.name} @ #{@antpath}\n&quot;</span> <span class="ruby-operator">+</span>
+                                        <span class="ruby-node">&quot;  Depends         : #{@node.depends.join(',')}\n&quot;</span> <span class="ruby-operator">+</span>
+                                        <span class="ruby-node">&quot;  IF-condition    : #{@node.if}\n&quot;</span> <span class="ruby-operator">+</span>
+                                        <span class="ruby-node">&quot;  UNLESS-condition: #{@node.unless}&quot;</span>
+                                <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:target_end</span>
+                                        <span class="ruby-node">&quot;Leaving  target: #{@node.name} @ #{@antpath}&quot;</span>
+                                <span class="ruby-keyword kw">else</span>
+                                        <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@node</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">Element</span>)
+                                                <span class="ruby-identifier">str</span>= <span class="ruby-ivar">@node</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">tosjis</span>.<span class="ruby-identifier">split</span>(<span class="ruby-value str">&quot;\n&quot;</span>).<span class="ruby-identifier">first</span>
+                                                <span class="ruby-identifier">str</span><span class="ruby-operator">+=</span><span class="ruby-value str">&quot;\n(( &quot;</span>
+                                                <span class="ruby-identifier">str</span><span class="ruby-operator">+=</span><span class="ruby-ivar">@evaluated_value</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">tosjis</span>.<span class="ruby-identifier">split</span>(<span class="ruby-value str">&quot;\n&quot;</span>).<span class="ruby-identifier">first</span>
+                                                <span class="ruby-identifier">str</span><span class="ruby-operator">+=</span><span class="ruby-value str">&quot; ))&quot;</span>
+                                                <span class="ruby-identifier">str</span>
+                                        <span class="ruby-keyword kw">else</span>
+                                                <span class="ruby-ivar">@node</span>
+                                        <span class="ruby-keyword kw">end</span>
+                                <span class="ruby-keyword kw">end</span>
+                        <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

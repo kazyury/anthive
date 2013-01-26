@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<project name="anthive" basedir="." default="default" >
+
+	<property file="VERSION" />
+	<property name="exerb.core" value="D:/ruby/share/exerb/ruby184c.exc" />
+
+	<target name="default">
+		<echo message="See `ant -p` for designed targets." />
+	</target>
+
+	<target name="release" 
+		description="Run unit-test, Generate docs, Generate Executables, and Packaging." >
+		<antcall target="run_unit_test" />
+		<antcall target="generate_docs" />
+		<antcall target="generate_exe" />
+		<antcall target="package" />
+	</target>
+
+	<target name="run_unit_test" description="Run unit-test" >
+	</target>
+
+	<target name="generate_docs" description="Generate Rdoc document." >
+		<exec dir="${basedir}" executable="rdoc.bat" >
+			<arg line="--charset Shift_JIS --main ant-hive.rb" />
+		</exec>
+	</target>
+
+	<target name="generate_exe" depends="make_recipe" description="Generate Win32 Executables." >
+		<exec dir="${basedir}" executable="exerb.bat">
+			<arg line="-C ${exerb.core} ant-hive.exy" />
+		</exec>
+	</target>
+
+	<!-- package -->
+	<target name="package" description="Packages executables,rdoc,and so on." >
+		<!--
+		tar作成用ディレクトリに配布物をコピーし、tarにまとめる。
+		配布物は
+			ant-hive.xml (.sample をrenameしてコピー)
+			ant-hive.exe
+			ant-hive.html.lnk
+			sample.svg
+			sample.dot
+			doc/
+			sample/
+			generators/map.erb
+			generators/template.xlt
+		-->
+		<property name="destdir" value="../anthive_v${version}" />
+		<property name="desttar" value="../anthive_v${version}.tar" />
+		<echo message="generating ${desttar}" />
+		<delete dir="${destdir}" />
+		<mkdir  dir="${destdir}" />
+		<copy file="ant-hive.xml.sample" tofile="${destdir}/ant-hive.xml" />
+		<copy file="ant-hive.exe" todir="${destdir}" />
+		<copy file="ant-hive.html.lnk" todir="${destdir}" />
+		<copy file="sample.svg" todir="${destdir}" />
+		<copy file="sample.dot" todir="${destdir}" />
+		<copy file="generators/map.erb" todir="${destdir}/generators" />
+		<copy file="generators/template.xlt" todir="${destdir}/generators" />
+		<copy todir="${destdir}/doc" >
+			<fileset dir="doc" />
+		</copy>
+		<copy todir="${destdir}/sample" >
+			<fileset dir="sample" />
+		</copy>
+		<tar destfile="${desttar}" basedir="${destdir}" />
+	</target>
+
+	<!-- make_recipe -->
+	<target name="make_recipe" 
+		description="Generate exerb recipe file for Win32 Executables." >
+		<exec dir="${basedir}" executable="ruby.exe">
+			<arg line="-r exerb/mkexy ant-hive.rb --fake -H sample -q" />
+		</exec>
+	</target>
+
+</project>
+

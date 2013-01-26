@@ -1,0 +1,875 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: AntHive::Evaluater</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">AntHive::Evaluater</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../files/evaluater_rb.html">
+                evaluater.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+                Object
+            </td>
+        </tr>
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+静的解析の完了したAntスクリプトの評価器。
+</p>
+
+    </div>
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000050">evaluate</a>&nbsp;&nbsp;
+      <a href="#M000054">evaluate_ant</a>&nbsp;&nbsp;
+      <a href="#M000056">evaluate_antcall</a>&nbsp;&nbsp;
+      <a href="#M000060">evaluate_available</a>&nbsp;&nbsp;
+      <a href="#M000053">evaluate_element</a>&nbsp;&nbsp;
+      <a href="#M000058">evaluate_for</a>&nbsp;&nbsp;
+      <a href="#M000051">evaluate_project</a>&nbsp;&nbsp;
+      <a href="#M000062">evaluate_property</a>&nbsp;&nbsp;
+      <a href="#M000059">evaluate_propertycopy</a>&nbsp;&nbsp;
+      <a href="#M000055">evaluate_subant</a>&nbsp;&nbsp;
+      <a href="#M000052">evaluate_target</a>&nbsp;&nbsp;
+      <a href="#M000061">evaluate_var</a>&nbsp;&nbsp;
+      <a href="#M000057">jump</a>&nbsp;&nbsp;
+      <a href="#M000041">new</a>&nbsp;&nbsp;
+      <a href="#M000049">node_end_tag</a>&nbsp;&nbsp;
+      <a href="#M000048">node_start_tag</a>&nbsp;&nbsp;
+      <a href="#M000043">options=</a>&nbsp;&nbsp;
+      <a href="#M000064">replace_with</a>&nbsp;&nbsp;
+      <a href="#M000063">runtime_path</a>&nbsp;&nbsp;
+      <a href="#M000047">target_end</a>&nbsp;&nbsp;
+      <a href="#M000046">target_start</a>&nbsp;&nbsp;
+      <a href="#M000045">toplevel_end</a>&nbsp;&nbsp;
+      <a href="#M000044">toplevel_start</a>&nbsp;&nbsp;
+      <a href="#M000042">without_toplevel_eval</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+    <div id="class-list">
+      <h3 class="section-bar">Classes and Modules</h3>
+
+      Class <a href="Evaluater/EvaluatedStep.html" class="link">AntHive::Evaluater::EvaluatedStep</a><br />
+
+    </div>
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Class methods</h3>
+
+      <div id="method-M000041" class="method-detail">
+        <a name="M000041"></a>
+
+        <div class="method-heading">
+          <a href="Evaluater.src/M000041.html" target="Code" class="method-signature"
+            onclick="popupCode('Evaluater.src/M000041.html');return false;">
+          <span class="method-name">new</span><span class="method-args">(controller,root_dir,antfile,property_table=nil,basedir=nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+初期化処理
+</p>
+<dl>
+<dt>controller</dt><dd>呼出元であるcontrollerインスタンス。評価過程で未解析の(<a
+href="Hive.html">Hive</a>に登録されていない)XMLファイルに遭遇した際に、 <a
+href="Controller.html">Controller</a> に処理を依頼するために必要。
+
+</dd>
+<dt>root_dir</dt><dd>仮想ルートディレクトリを示す文字列
+
+</dd>
+<dt>antfile</dt><dd>antfile
+
+</dd>
+<dt>logger</dt><dd>Loggerインスタンス
+
+</dd>
+<dt>property_table</dt><dd><a
+href="PropertyTable.html">PropertyTable</a>インスタンス。nilがセットされた場合には新たなブランクの<a
+href="PropertyTable.html">PropertyTable</a>を生成し、自らの@tableとして使用する。
+
+</dd>
+<dt>basedir</dt><dd>basedir
+
+</dd>
+<dt>returns</dt><dd>新たな<a href="Evaluater.html">Evaluater</a>インスタンス
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000050" class="method-detail">
+        <a name="M000050"></a>
+
+        <div class="method-heading">
+          <a href="Evaluater.src/M000050.html" target="Code" class="method-signature"
+            onclick="popupCode('Evaluater.src/M000050.html');return false;">
+          <span class="method-name">evaluate</span><span class="method-args">(target=nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+targetにて指定されたターゲットの評価を開始する。
+targetが指定されない場合には、この<a
+href="Evaluater.html">Evaluater</a>の@defaultを用いる。
+(@defaultは、&#8217;<a href="Hive.html">Hive</a>に登録済みのこの<a
+href="Evaluater.html">Evaluater</a>が評価する対象ファイル&#8217;の
+AntObject::Project#default)
+</p>
+<p>
+self<a
+href="Evaluater.html#M000042">without_toplevel_eval</a>が設定されていない場合には、プロジェクトスコープの評価を行った後に、対象ターゲットの評価を行う。
+self<a
+href="Evaluater.html#M000042">without_toplevel_eval</a>が設定されている場合には、対象ターゲットの評価のみを行う。
+</p>
+<dl>
+<dt>target</dt><dd>評価対象ターゲット名を示す文字列。nilの場合にはデフォルトターゲットを使用する。
+
+</dd>
+<dt>returns</dt><dd><a href="Evaluater/EvaluatedStep.html">EvaluatedStep</a>の配列
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000054" class="method-detail">
+        <a name="M000054"></a>
+
+        <div class="method-heading">
+          <a href="Evaluater.src/M000054.html" target="Code" class="method-signature"
+            onclick="popupCode('Evaluater.src/M000054.html');return false;">
+          <span class="method-name">evaluate_ant</span><span class="method-args">(element,replacement={})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+antタスクを評価する。
+</p>
+<dl>
+<dt>element</dt><dd>antタスクを表現するREXML::Element
+
+</dd>
+<dt>replacement</dt><dd>(特にFor要素のため)変換関係を示すHash。例.{&quot;@{rpkg}&quot; =&gt;
+&quot;test&quot; }
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000056" class="method-detail">
+        <a name="M000056"></a>
+
+        <div class="method-heading">
+          <a href="Evaluater.src/M000056.html" target="Code" class="method-signature"
+            onclick="popupCode('Evaluater.src/M000056.html');return false;">
+          <span class="method-name">evaluate_antcall</span><span class="method-args">(element,replacement={})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+antcallタスクを評価する。
+</p>
+<dl>
+<dt>element</dt><dd>antcallタスクを表現するREXML::Element
+
+</dd>
+<dt>replacement</dt><dd>(特にFor要素のため)変換関係を示すHash。例.{&quot;@{rpkg}&quot; =&gt;
+&quot;test&quot; }
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000060" class="method-detail">
+        <a name="M000060"></a>
+
+        <div class="method-heading">
+          <a href="Evaluater.src/M000060.html" target="Code" class="method-signature"
+            onclick="popupCode('Evaluater.src/M000060.html');return false;">
+          <span class="method-name">evaluate_available</span><span class="method-args">(element,replacement={})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+available要素を評価する。 [ asis?
+]属性としてfile属性を持つ要素のみ実際の評価を実施する。
+condition要素のネストした子要素の場合もあるので、property属性が指定されていない場合には、処理を無視する。
+</p>
+<dl>
+<dt>element</dt><dd>available要素を表現するREXML::Element
+
+</dd>
+<dt>replacement</dt><dd>(特にFor要素のため)変換関係を示すHash。例.{&quot;@{rpkg}&quot; =&gt;
+&quot;test&quot; }
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000053" class="method-detail">
+        <a name="M000053"></a>
+
+        <div class="method-heading">
+          <a href="Evaluater.src/M000053.html" target="Code" class="method-signature"
+            onclick="popupCode('Evaluater.src/M000053.html');return false;">
+          <span class="method-name">evaluate_element</span><span class="method-args">(element,replacement={})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Antスクリプト内の1要素を評価する。
+実際には、そのタスクの種類に応じたメソッドを呼び出す。
+</p>
+<dl>
+<dt>element</dt><dd>Antスクリプト内の1ノードを表現するREXML::Element
+
+</dd>
+<dt>replacement</dt><dd>(特にFor要素のため)変換関係を示すHash。例.{&quot;@{rpkg}&quot; =&gt;
+&quot;test&quot; }
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000058" class="method-detail">
+        <a name="M000058"></a>
+
+        <div class="method-heading">
+          <a href="Evaluater.src/M000058.html" target="Code" class="method-signature"
+            onclick="popupCode('Evaluater.src/M000058.html');return false;">
+          <span class="method-name">evaluate_for</span><span class="method-args">(element,replacement={})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+for要素を評価する。(これはAnt-Contribの追加タスクです)
+list属性の値を取得し、それらをiterateしながら子要素の評価を行う。
+</p>
+<dl>
+<dt>element</dt><dd>for要素を表現するREXML::Element
+
+</dd>
+<dt>replacement</dt><dd>(特にFor要素のため)変換関係を示すHash。例.{&quot;@{rpkg}&quot; =&gt;
+&quot;test&quot; }
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000051" class="method-detail">
+        <a name="M000051"></a>
+
+        <div class="method-heading">
+          <a href="Evaluater.src/M000051.html" target="Code" class="method-signature"
+            onclick="popupCode('Evaluater.src/M000051.html');return false;">
+          <span class="method-name">evaluate_project</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Antのプロジェクトスコープの評価を開始する。
+具体的には、antのルート要素である&lt;project&gt;直下の要素の評価を行う。
+</p>
+<ul>
+<li>property要素 : self<a
+href="Evaluater.html#M000062">evaluate_property</a>を呼び出す。
+
+</li>
+<li>target要素 : この時点では評価しない(後の<a
+href="Evaluater.html#M000052">evaluate_target</a>にて実施)
+
+</li>
+<li>その他の要素 : 未実装である旨の警告を表示するのみ。
+
+</li>
+</ul>
+        </div>
+      </div>
+
+      <div id="method-M000062" class="method-detail">
+        <a name="M000062"></a>
+
+        <div class="method-heading">
+          <a href="Evaluater.src/M000062.html" target="Code" class="method-signature"
+            onclick="popupCode('Evaluater.src/M000062.html');return false;">
+          <span class="method-name">evaluate_property</span><span class="method-args">(element,replacement={},mutable=false,alternate_table=false )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+property要素を評価する。 サポートしている属性は以下のとおり。
+</p>
+<ul>
+<li>file=&#8217;&#8216;
+
+</li>
+<li>name=&#8217;&#8217; and value=&#8217;&#8216;
+
+</li>
+</ul>
+<dl>
+<dt>element</dt><dd>available要素を表現するREXML::Element
+
+</dd>
+<dt>replacement</dt><dd>(特にFor要素のため)変換関係を示すHash。例.{&quot;@{rpkg}&quot; =&gt;
+&quot;test&quot; }
+
+</dd>
+<dt>mutable</dt><dd>デフォルトはfalse(不変)。本来、propertyは不変なのだが、evaluate_varと実装を共有するために使用
+
+</dd>
+<dt>alternate_table</dt><dd>代替プロパティ表を用いるか否か。真の場合は、代替プロパティ表に対してプロパティを登録する。デフォルトはfalse(代替プロパティ表を用いず、@tableを使用)。
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000059" class="method-detail">
+        <a name="M000059"></a>
+
+        <div class="method-heading">
+          <a href="Evaluater.src/M000059.html" target="Code" class="method-signature"
+            onclick="popupCode('Evaluater.src/M000059.html');return false;">
+          <span class="method-name">evaluate_propertycopy</span><span class="method-args">(element,replacement={})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+propertycopy要素を評価する。(これはAnt-Contribの追加タスクです)
+property属性(又はname属性)のプロパティを、from属性の文字が示すプロパティ値で設定する。
+</p>
+<dl>
+<dt>element</dt><dd>propertycopy要素を表現するREXML::Element
+
+</dd>
+<dt>replacement</dt><dd>(特にFor要素のため)変換関係を示すHash。例.{&quot;@{rpkg}&quot; =&gt;
+&quot;test&quot; }
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000055" class="method-detail">
+        <a name="M000055"></a>
+
+        <div class="method-heading">
+          <a href="Evaluater.src/M000055.html" target="Code" class="method-signature"
+            onclick="popupCode('Evaluater.src/M000055.html');return false;">
+          <span class="method-name">evaluate_subant</span><span class="method-args">(element,replacement={})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+subantタスクを評価する。
+</p>
+<dl>
+<dt>element</dt><dd>subantタスクを表現するREXML::Element
+
+</dd>
+<dt>replacement</dt><dd>(特にFor要素のため)変換関係を示すHash。例.{&quot;@{rpkg}&quot; =&gt;
+&quot;test&quot; }
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000052" class="method-detail">
+        <a name="M000052"></a>
+
+        <div class="method-heading">
+          <a href="Evaluater.src/M000052.html" target="Code" class="method-signature"
+            onclick="popupCode('Evaluater.src/M000052.html');return false;">
+          <span class="method-name">evaluate_target</span><span class="method-args">(name)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+ターゲットの評価を行う。 評価順は以下のとおり。
+</p>
+<ol>
+<li>depends が空ではない場合、dependsに登録されている順に評価を行う。
+
+</li>
+<li>ifがnilでない場合、その値が<a
+href="PropertyTable.html">PropertyTable</a>に登録されている場合に限り、評価対象候補とする。
+
+</li>
+<li>unlessがnilでない場合、その値が<a
+href="PropertyTable.html">PropertyTable</a>に登録されていない場合に限り、評価対象候補とする。
+
+</li>
+<li>評価対象候補のターゲットである場合、各要素を順に評価する。
+
+</li>
+</ol>
+<p>
+制約事項：現実装ではtarget内部での条件分岐の評価は行っていないので、callsに登録されている呼び出しは全て実行されるように評価される。
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000061" class="method-detail">
+        <a name="M000061"></a>
+
+        <div class="method-heading">
+          <a href="Evaluater.src/M000061.html" target="Code" class="method-signature"
+            onclick="popupCode('Evaluater.src/M000061.html');return false;">
+          <span class="method-name">evaluate_var</span><span class="method-args">(element,replacement={})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+var要素を評価する。(これはAnt-Contribの追加タスクです)
+実際には全ての処理を<a
+href="Evaluater.html#M000062">evaluate_property</a>に任せてしまう手抜き実装。
+</p>
+<dl>
+<dt>element</dt><dd>propertycopy要素を表現するREXML::Element
+
+</dd>
+<dt>replacement</dt><dd>(特にFor要素のため)変換関係を示すHash。例.{&quot;@{rpkg}&quot; =&gt;
+&quot;test&quot; }
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000057" class="method-detail">
+        <a name="M000057"></a>
+
+        <div class="method-heading">
+          <a href="Evaluater.src/M000057.html" target="Code" class="method-signature"
+            onclick="popupCode('Evaluater.src/M000057.html');return false;">
+          <span class="method-name">jump</span><span class="method-args">(next_file,next_target,element,replacement,without_toplevel=false)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+antcall/ant/subantタスクの共通メソッド。
+&quot;次の&quot;ファイル名とターゲット名が確定していることを前提として以下の処理を行う。
+</p>
+<ul>
+<li>&quot;次のファイル&quot;が未解析の場合には、parseを行う。
+
+</li>
+<li>&quot;次のプロパティ表&quot;を生成する。(inheritAll属性が偽の場合には空のプロパティ表を生成)
+
+</li>
+<li>&quot;次のプロパティ表&quot;に、子要素で指定されたproperty,paramを登録する。
+
+</li>
+<li>&quot;次のプロパティ表&quot;を用いて、&quot;次の<a
+href="Evaluater.html">Evaluater</a>&quot;を生成して、処理を実行させる。
+
+</li>
+</ul>
+<dl>
+<dt>next_file</dt><dd>&quot;次の評価対象ファイル&quot;を示す文字列。この処理に渡される時点で展開済みであることが期待される。
+
+</dd>
+<dt>next_target</dt><dd>&quot;次の評価対象ターゲット&quot;を示す文字列。
+
+</dd>
+<dt>element</dt><dd>antcall/ant/subantタスクを表現するREXML::Element
+
+</dd>
+<dt>replacement</dt><dd>(特にFor要素のため)変換関係を示すHash。例.{&quot;@{rpkg}&quot; =&gt;
+&quot;test&quot; }
+
+</dd>
+<dt>without_toplevel</dt><dd>真を設定した場合には、トップレベルの解析を行わない(antcall用)。デフォルトはfalse。
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000049" class="method-detail">
+        <a name="M000049"></a>
+
+        <div class="method-heading">
+          <a href="Evaluater.src/M000049.html" target="Code" class="method-signature"
+            onclick="popupCode('Evaluater.src/M000049.html');return false;">
+          <span class="method-name">node_end_tag</span><span class="method-args">(target_node,replacement={})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+ターゲット内の評価ノードの終了タグを打つ。
+</p>
+<dl>
+<dt>target_node</dt><dd>処理中の要素を示すREXML::Elementインスタンス
+
+</dd>
+<dt>replacement</dt><dd>(特にFor要素のため)変換関係を示すHash。例.{&quot;@{rpkg}&quot; =&gt;
+&quot;test&quot; }
+
+</dd>
+<dt>returns</dt><dd>不定
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000048" class="method-detail">
+        <a name="M000048"></a>
+
+        <div class="method-heading">
+          <a href="Evaluater.src/M000048.html" target="Code" class="method-signature"
+            onclick="popupCode('Evaluater.src/M000048.html');return false;">
+          <span class="method-name">node_start_tag</span><span class="method-args">(target_node,replacement={})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+ターゲット内の評価ノードである旨のtagを打つ。
+実際には、EvaluatedStepの新たなインスタンスを@tag=:stepで生成。
+併せて、その対象要素内の${},@{}を展開した内容を、EvaluatedStep#evaluated_valueにセットする。
+その後にsteps(評価経路情報)に格納する。
+</p>
+<dl>
+<dt>target_node</dt><dd>処理中の要素を示すREXML::Elementインスタンス
+
+</dd>
+<dt>replacement</dt><dd>(特にFor要素のため)変換関係を示すHash。例.{&quot;@{rpkg}&quot; =&gt;
+&quot;test&quot; }
+
+</dd>
+<dt>returns</dt><dd>不定
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000043" class="method-detail">
+        <a name="M000043"></a>
+
+        <div class="method-heading">
+          <a href="Evaluater.src/M000043.html" target="Code" class="method-signature"
+            onclick="popupCode('Evaluater.src/M000043.html');return false;">
+          <span class="method-name">options=</span><span class="method-args">(options)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+実行時オプション(プロパティ)を指定する。
+引数としては&quot;プロパティ名=&gt;値&quot;(文字列)のHashを期待しているため、
+実行時オプションなどで-Dpackage=test -Dnode=build.srv
+などと指定されている場合には、 前処理でHash化まですんでいる必要がある。
+</p>
+<dl>
+<dt>options</dt><dd>&quot;key&quot;=&gt;&quot;val&quot;のHash。ex.) {
+&quot;package&quot;=&gt;test&quot;,&quot;node&quot;=&gt;&quot;build.srv&quot;
+}
+
+</dd>
+<dt>returns</dt><dd>不定
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000064" class="method-detail">
+        <a name="M000064"></a>
+
+        <div class="method-heading">
+          <a href="Evaluater.src/M000064.html" target="Code" class="method-signature"
+            onclick="popupCode('Evaluater.src/M000064.html');return false;">
+          <span class="method-name">replace_with</span><span class="method-args">(replacement, str)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000063" class="method-detail">
+        <a name="M000063"></a>
+
+        <div class="method-heading">
+          <a href="Evaluater.src/M000063.html" target="Code" class="method-signature"
+            onclick="popupCode('Evaluater.src/M000063.html');return false;">
+          <span class="method-name">runtime_path</span><span class="method-args">(file)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+実行時のコンテキストを加味した上でのファイルパスを返却する。
+具体的には以下の判断を行う。
+</p>
+<ul>
+<li>指定されたfileが絶対パス表記の場合には、file先頭の/を除去した上で、仮想ルートを基点とした相対パスを構築
+
+</li>
+<li>指定されたfileが相対パス表記の場合には、自身が初期化された際の@basedir+@expand_basedir+fileを、仮想ルートを基点とした相対パスで表現
+
+</li>
+<li>上記の&quot;仮想ルートからの相対パス&quot;が、実際に存在するならばその値を。実際には存在しないならば、警告を上げた上で適当なパスを返却。
+
+</li>
+</ul>
+<p>
+[file]
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000047" class="method-detail">
+        <a name="M000047"></a>
+
+        <div class="method-heading">
+          <a href="Evaluater.src/M000047.html" target="Code" class="method-signature"
+            onclick="popupCode('Evaluater.src/M000047.html');return false;">
+          <span class="method-name">target_end</span><span class="method-args">(target_node)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+ターゲットが終了した旨のtagを打つ。
+実際には、EvaluatedStepの新たなインスタンスを@tag=:<a
+href="Evaluater.html#M000047">target_end</a>で生成してsteps(評価経路情報)に格納する。
+</p>
+<dl>
+<dt>target_node</dt><dd>target要素そのもののREXML::Elementインスタンス
+
+</dd>
+<dt>returns</dt><dd>不定
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000046" class="method-detail">
+        <a name="M000046"></a>
+
+        <div class="method-heading">
+          <a href="Evaluater.src/M000046.html" target="Code" class="method-signature"
+            onclick="popupCode('Evaluater.src/M000046.html');return false;">
+          <span class="method-name">target_start</span><span class="method-args">(target_node)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+ターゲットが開始した旨のtagを打つ。
+実際には、EvaluatedStepの新たなインスタンスを@tag=:<a
+href="Evaluater.html#M000046">target_start</a>で生成してsteps(評価経路情報)に格納する。
+</p>
+<dl>
+<dt>target_node</dt><dd>target要素そのもののREXML::Elementインスタンス
+
+</dd>
+<dt>returns</dt><dd>不定
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000045" class="method-detail">
+        <a name="M000045"></a>
+
+        <div class="method-heading">
+          <a href="Evaluater.src/M000045.html" target="Code" class="method-signature"
+            onclick="popupCode('Evaluater.src/M000045.html');return false;">
+          <span class="method-name">toplevel_end</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+トップレベルの解析が終了した旨のtagを打つ。
+実際には、EvaluatedStepの新たなインスタンスを@tag=:<a
+href="Evaluater.html#M000045">toplevel_end</a>で生成してsteps(評価経路情報)に格納する。
+</p>
+<dl>
+<dt>returns</dt><dd>不定
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000044" class="method-detail">
+        <a name="M000044"></a>
+
+        <div class="method-heading">
+          <a href="Evaluater.src/M000044.html" target="Code" class="method-signature"
+            onclick="popupCode('Evaluater.src/M000044.html');return false;">
+          <span class="method-name">toplevel_start</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+トップレベルの解析が開始した旨のtagを打つ。
+実際には、EvaluatedStepの新たなインスタンスを@tag=:<a
+href="Evaluater.html#M000044">toplevel_start</a>で生成してsteps(評価経路情報)に格納する。
+</p>
+<dl>
+<dt>returns</dt><dd>不定
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+      <div id="method-M000042" class="method-detail">
+        <a name="M000042"></a>
+
+        <div class="method-heading">
+          <a href="Evaluater.src/M000042.html" target="Code" class="method-signature"
+            onclick="popupCode('Evaluater.src/M000042.html');return false;">
+          <span class="method-name">without_toplevel_eval</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+FIXME AS-IS METHOD. <a
+href="Evaluater.html">Evaluater</a>がトップレベルの解析を実施しないよう指定する。
+</p>
+<dl>
+<dt>returns</dt><dd>true
+
+</dd>
+</dl>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

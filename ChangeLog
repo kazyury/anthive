@@ -1,0 +1,59 @@
+== ChangeLog
+=== version 0.5.4(alpha): 中間バージョン
+* 2008/03/02 route情報からProcessFlowDiagram(PFD)を作る機能を実装する。
+* 2008/02/13 -R オプションの処理が腐っていたので修正。thx sawa
+* 2008/02/13 build.xmlでソースパッケージを生成するtargetを追加。
+* 2008/02/13 antcall/ant/subantの子要素についてもEvaluatedStepを積むように変更。
+* 2008/02/13 Route出力時のExcelファイル保存時に使用できない文字が含まれる場合には、'_'で置換してファイル名とするよう変更。
+* 2008/02/13 ant要素などの子要素で指定されたparam,propertyは次のEvaluater(だけ)に渡すように変更。
+* 2008/02/13 Evaluaterでantcall/ant/subant の実装をリファクタリング。共通部分の括りだしを実施。(UnitTestが無いので一寸つらい。バグってるかも。)
+* 2008/02/10 hiveにrouteを格納するときに、オプションが無視されている件の対応
+* 2008/02/10 トップレベルの要素(property等)についてもEvaluatedStepを積むよう変更
+
+=== version 0.5.3(alpha): 中間バージョン
+* 2008/02/08 routeでtargetを指定しない場合に、Hive#entry_pointがnilになるためにExcel出力時に例外が発生する。
+* 2008/02/02 LoggerをSingletonなLoggerに変更。伴って関連ライブラリ追加。これで各クラスでのLogger出力がやりやすくなる。
+* 2008/02/02 varタスク(Ant-Contrib)を実装。(ただし手抜き。バグが取りきれていないようにも見える...)
+* 2008/02/01 ant-hive.xmlの構文を変更(route要素の子要素としてoptionを定義)
+* 2008/02/01 文字化け対応でkconvをrequireするよう変更。併せてRoute出力時には文字化けしないようになった筈。
+* 2008/01/31 PropertyTable#expand で無限展開抑制のための再スキャン実施FLのバグで、Tableに未登録のプロパティ名が存在していた時には、残りの展開可能なプロパティ名を諦めてしまっていたのを修正
+* 2008/01/30 PropertyTableのUnitTestを追加
+* 2008/01/30 PropertyTable#expandがネストしたプロパティ展開に対応( ${...${---}..} に対応)
+* 2008/01/30 PropertyTable#expandをリファクタリング(PropertyTable#expandables, PropertyTable#expandable? を追加。)
+* 2008/01/30 immutables導入に伴い、PropertyTable#deep_copyでもimmutablesを取り扱うように
+* 2008/01/30 PropertyTable#registで第3引数:mutable=false を追加。これでvarタスクが組めるように。
+* 2008/01/30 forタスクでlistの展開が行われていなかった件の対応
+
+=== version 0.5.2(alpha): 中間バージョン
+* 2008/01/29 for タスク(Ant-Contrib)の実装
+* 2008/01/29 cacheファイルのネーミングルールを仮想ルートディレクトリ毎に一意になるよう、".#{@root_directory.gsub('/','.')}.cache" に変更
+* 2008/01/29 ant-hiveのbuild.xmlでRDoc作成の前にdocディレクトリを削除するよう変更
+* 2008/01/28 available タスクの実装
+* 2008/01/28 propertycopy タスク(Ant-Contrib)の実装
+* 2008/01/28 Rdocでtestをexcludeパターンに追加
+* 2008/01/28 ParserのUnitTestを作成。build.xmlへの組み込み実施。
+* 2008/01/28 ユーザドキュメントを作成。あとは、cui.rbとかでcallbackしているMAPの名前解決部分と、生成ファイル名のルールを何処かに記載すればユーザドキュメントは完了。
+* 2008/01/24 EvaluatedStepに${}を展開させた後の値(evaluated_value)を持たせて、値が展開前と展開後が異なる場合には、Route記述に出力するよう改善
+* 2008/01/24 map生成時に、ant,antcall,subant,depends毎に線種を変える。
+* 2008/01/24 読み込むべきプロパティファイルが絶対パスで指定されているときに、@root_directory以下を対象とするよう修正(/var/ant -> sample/var/ant)
+* 2008/01/24 PropertyParserを廃止し、新たなモジュールPropertyFileを使用するように変更
+* 2008/01/24 build.xmlでexerbコアのパスをexerb.coreプロパティに外だし。実行時に指定可能に。
+* 2008/01/24 route生成時のログメッセージが不適切だったのを修正
+* 2008/01/24 Evaluaterが存在しないpropertyファイルを参照しようとした際に、出力するログを限定した。
+* 2008/01/24 loggerの出力レベルを調整。取り合えずINFOレベルでは必要最小限の情報に絞ることにした。
+
+=== version 0.5.0(alpha): initial version.
+
+== Todo
+* (Middle)mapを出力する際に、統合して出力(現状)と個別に出力することを選択できるようにする。
+ここまで来たらBeta扱いに
+* (Low)ExcelConstとExcelColumnNameをmiscに移動
+* (Low)RDocコメント記入
+* (Low)EvaluatedStep#node がAntObject::Targetになってしまっているが、影響範囲を確認
+* (Low)evaluate_XXXXXシリーズは、REXML::Documentインタフェースではない方が良さそう...。今のままではネストした子要素を上手く表現できていない。(解釈はしているが)
+* (Low)サボっているUnitTestを実装
+* (Low)graphvizのオプション調整
+* (Low)UnitTestしやすいようにリファクタリング(主に責任分割によるメソッド切り出し)
+* (Low)ant,subant,antcall 時の次のファイル等の解決を、ParserとEvaluaterで共用可能なように。
+* (Low)GUIを実装
+

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>evaluate_project (AntHive::Evaluater)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File evaluater.rb, line 248</span>
+                <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">evaluate_project</span>
+                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Project scope evaluation start for [ #{@project.real_path} ].&quot;</span>}
+                        <span class="ruby-identifier">raise</span> <span class="ruby-constant">AntHiveError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">&quot;[BUG] basedir is not set.&quot;</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@basedir</span>
+                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;basedir is [ #{@basedir} ].&quot;</span>}
+                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;traverse all nodes in [ #{@project.real_path} ].&quot;</span>}
+
+                        <span class="ruby-identifier">toplevel_start</span>
+                        <span class="ruby-ivar">@table</span>.<span class="ruby-identifier">regist</span>(<span class="ruby-value str">'basedir'</span>,<span class="ruby-ivar">@expand_basedir</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@table</span>.<span class="ruby-identifier">registed?</span>(<span class="ruby-value str">'basedir'</span>)
+                        
+                        <span class="ruby-comment cmt"># 解析された全ノードを辿り、ファイルからのProperty読み込みの場合にはその評価を行う。</span>
+                        <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">all_nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">node</span><span class="ruby-operator">|</span>
+
+                                <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">node</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">AntObject</span><span class="ruby-operator">::</span><span class="ruby-constant">Property</span>)
+                                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-value str">&quot;Property node is processing.&quot;</span>}
+                                        <span class="ruby-identifier">node_start_tag</span>(<span class="ruby-identifier">node</span>.<span class="ruby-identifier">source</span>)
+                                        <span class="ruby-identifier">evaluate_property</span>(<span class="ruby-identifier">node</span>.<span class="ruby-identifier">source</span>)
+                                        <span class="ruby-identifier">node_end_tag</span>(<span class="ruby-identifier">node</span>.<span class="ruby-identifier">source</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">node</span>.<span class="ruby-identifier">source</span>.<span class="ruby-identifier">has_elements?</span>
+                                <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">node</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">AntObject</span><span class="ruby-operator">::</span><span class="ruby-constant">Target</span>)
+                                        <span class="ruby-comment cmt"># この時点では読み飛ばして構わない</span>
+                                <span class="ruby-keyword kw">else</span>
+                                        <span class="ruby-identifier">node_start_tag</span>(<span class="ruby-identifier">node</span>)
+                                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">warn</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;NODE CLASS:[ #{node.class} ] IS IGNORED.&quot;</span>}
+                                        <span class="ruby-identifier">node_end_tag</span>(<span class="ruby-identifier">node</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">node</span>.<span class="ruby-identifier">has_elements?</span>
+                                <span class="ruby-keyword kw">end</span>
+                        }
+                        <span class="ruby-identifier">toplevel_end</span>
+                <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>evaluate_subant (AntHive::Evaluater)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File evaluater.rb, line 424</span>
+                <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">evaluate_subant</span>(<span class="ruby-identifier">element</span>,<span class="ruby-identifier">replacement</span>={})
+                        <span class="ruby-comment cmt"># subant の場合、build_pathでファイル名を直接指定する場合もあれば、</span>
+                        <span class="ruby-comment cmt"># pathだけを示してファイル名はantfileで指定することも出来る(?)</span>
+                        <span class="ruby-comment cmt"># 用途的には、前者の使用方法の方がおかしいような気もするけどよく判らない。</span>
+                        <span class="ruby-identifier">ant_file</span>  = <span class="ruby-identifier">element</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'antfile'</span>]
+                        <span class="ruby-identifier">build_path</span>= <span class="ruby-identifier">element</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'buildpath'</span>]
+                        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">ant_file</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">build_path</span>
+                                <span class="ruby-identifier">next_file</span> = <span class="ruby-identifier">build_path</span><span class="ruby-operator">+</span><span class="ruby-value str">&quot;/&quot;</span><span class="ruby-operator">+</span><span class="ruby-identifier">ant_file</span>
+                        <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">ant_file</span>
+                                <span class="ruby-identifier">next_file</span> = <span class="ruby-identifier">ant_file</span>
+                        <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">build_path</span>
+                                <span class="ruby-identifier">build_path</span>=<span class="ruby-identifier">replace_with</span>(<span class="ruby-identifier">replacement</span>,<span class="ruby-identifier">build_path</span>)
+
+                                <span class="ruby-keyword kw">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">file?</span>(<span class="ruby-identifier">runtime_path</span>(<span class="ruby-ivar">@table</span>.<span class="ruby-identifier">expand</span>(<span class="ruby-identifier">build_path</span>)))
+                                        <span class="ruby-identifier">next_file</span> = <span class="ruby-identifier">build_path</span>
+                                <span class="ruby-keyword kw">elsif</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">directory?</span>(<span class="ruby-identifier">runtime_path</span>(<span class="ruby-ivar">@table</span>.<span class="ruby-identifier">expand</span>(<span class="ruby-identifier">build_path</span>)))
+                                        <span class="ruby-identifier">next_file</span> = <span class="ruby-identifier">build_path</span> <span class="ruby-operator">+</span><span class="ruby-value str">'/build.xml'</span>
+                                <span class="ruby-keyword kw">else</span>
+                                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">error</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;[ BUG ] Is this valid? [ #{runtime_path(@table.expand(build_path))} ]&quot;</span>}
+                                <span class="ruby-keyword kw">end</span>
+                        <span class="ruby-keyword kw">else</span>
+                                <span class="ruby-identifier">next_file</span> = <span class="ruby-value str">'build.xml'</span>
+                        <span class="ruby-keyword kw">end</span>
+                        <span class="ruby-identifier">next_file</span>=<span class="ruby-identifier">replace_with</span>(<span class="ruby-identifier">replacement</span>,<span class="ruby-identifier">next_file</span>)
+                        <span class="ruby-identifier">next_file</span>=<span class="ruby-identifier">runtime_path</span>(<span class="ruby-ivar">@table</span>.<span class="ruby-identifier">expand</span>(<span class="ruby-identifier">next_file</span>)) <span class="ruby-comment cmt"># @root_dir + @basedir + @expand_basedir</span>
+                        <span class="ruby-identifier">next_target</span>=<span class="ruby-identifier">element</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'target'</span>]
+                        <span class="ruby-identifier">jump</span>(<span class="ruby-identifier">next_file</span>,<span class="ruby-identifier">next_target</span>,<span class="ruby-identifier">element</span>,<span class="ruby-identifier">replacement</span>)
+                        <span class="ruby-ivar">@steps</span>
+                <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

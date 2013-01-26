@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>evaluate (AntHive::Controller)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File controller.rb, line 141</span>
+                <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">evaluate</span>(<span class="ruby-identifier">file_path</span>,<span class="ruby-identifier">target</span>,<span class="ruby-identifier">options</span>)
+                        <span class="ruby-identifier">raise</span> <span class="ruby-constant">AntHiveError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">&quot;Use AntHive::Controller#root_directory=() to set Root Directory for ants.&quot;</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@root_directory</span>
+                        <span class="ruby-identifier">parse_if_not</span>(<span class="ruby-identifier">file_path</span>)
+                        <span class="ruby-identifier">real_path</span>=<span class="ruby-constant">RealPath</span>.<span class="ruby-identifier">realpath</span>(<span class="ruby-ivar">@root_directory</span>,<span class="ruby-identifier">file_path</span>)
+
+                        <span class="ruby-identifier">str</span>=<span class="ruby-identifier">options</span>.<span class="ruby-identifier">collect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span>,<span class="ruby-identifier">v</span><span class="ruby-operator">|</span><span class="ruby-node">&quot;#{k}=&gt;#{v}&quot;</span>}.<span class="ruby-identifier">join</span>(<span class="ruby-value str">','</span>)
+
+                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">info</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Starting dynamic-evaluation for File:[ #{real_path} ], Target:[ #{target} ], Options:[ #{str} ].&quot;</span>}
+                        <span class="ruby-identifier">evaluater</span>=<span class="ruby-constant">Evaluater</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword kw">self</span>,<span class="ruby-ivar">@root_directory</span>,<span class="ruby-identifier">real_path</span>)
+                        <span class="ruby-identifier">evaluater</span>.<span class="ruby-identifier">options</span>=<span class="ruby-identifier">options</span>
+                        <span class="ruby-identifier">result</span>=<span class="ruby-identifier">evaluater</span>.<span class="ruby-identifier">evaluate</span>(<span class="ruby-identifier">target</span>)
+
+                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Registing result(route) for [ #{target} ] @ [ #{real_path} ] to Hive.&quot;</span>}
+                        <span class="ruby-comment cmt">#初期ターゲットが指定されていない場合には、評価結果の先頭ターゲットから</span>
+                        <span class="ruby-comment cmt">#初期ターゲットを推定する。</span>
+                        <span class="ruby-identifier">target</span>=<span class="ruby-identifier">result</span>.<span class="ruby-identifier">find</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">step</span><span class="ruby-operator">|</span> <span class="ruby-identifier">step</span>.<span class="ruby-identifier">target_start?</span> }.<span class="ruby-identifier">current_target</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">target</span>
+                        <span class="ruby-ivar">@hive</span>.<span class="ruby-identifier">regist_route</span>(<span class="ruby-identifier">real_path</span>,<span class="ruby-identifier">target</span>,<span class="ruby-identifier">options</span>,<span class="ruby-identifier">result</span>)
+                        <span class="ruby-identifier">target</span>
+                <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

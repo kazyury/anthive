@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>evaluate_propertycopy (AntHive::Evaluater)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File evaluater.rb, line 554</span>
+                <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">evaluate_propertycopy</span>(<span class="ruby-identifier">element</span>,<span class="ruby-identifier">replacement</span>={})
+                        <span class="ruby-identifier">prop_to_set</span>=<span class="ruby-identifier">element</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'property'</span>]
+                        <span class="ruby-identifier">prop_to_set</span>=<span class="ruby-identifier">element</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'name'</span>] <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">prop_to_set</span>
+                        <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">prop_to_set</span>
+                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">warn</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-value str">&quot;propertycopy node does not have 'name' or 'property' attribute.Ignored.&quot;</span>}
+                                <span class="ruby-keyword kw">return</span> 
+                        <span class="ruby-keyword kw">end</span>
+                        
+                        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">copy_key</span>=<span class="ruby-identifier">element</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'from'</span>]
+                                <span class="ruby-identifier">copy_key</span>=<span class="ruby-identifier">replace_with</span>(<span class="ruby-identifier">replacement</span>,<span class="ruby-identifier">copy_key</span>)
+                                <span class="ruby-identifier">copy_key</span>=<span class="ruby-ivar">@table</span>.<span class="ruby-identifier">expand</span>(<span class="ruby-identifier">copy_key</span>)
+                                <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@table</span>.<span class="ruby-identifier">registed?</span>(<span class="ruby-identifier">copy_key</span>)
+                                        <span class="ruby-identifier">value_to_set</span>=<span class="ruby-ivar">@table</span>.<span class="ruby-identifier">value_for</span>(<span class="ruby-identifier">copy_key</span>)
+                                        <span class="ruby-ivar">@table</span>.<span class="ruby-identifier">regist</span>(<span class="ruby-identifier">prop_to_set</span>, <span class="ruby-identifier">value_to_set</span>)
+                                <span class="ruby-keyword kw">else</span>
+                                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">warn</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Copying key:[ #{copy_key} ] is not registed.Ignored.&quot;</span>}
+                                        <span class="ruby-keyword kw">return</span>
+                                <span class="ruby-keyword kw">end</span>
+                        <span class="ruby-keyword kw">else</span>
+                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">warn</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-value str">&quot;Propertycopy node does not have 'from' attribute.Ignored.&quot;</span>}
+                                <span class="ruby-keyword kw">return</span>
+                        <span class="ruby-keyword kw">end</span>
+
+                <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

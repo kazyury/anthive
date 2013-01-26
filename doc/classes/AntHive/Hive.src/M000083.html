@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>new (AntHive::Hive)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File hive.rb, line 48</span>
+                <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>()
+                        <span class="ruby-ivar">@logger</span>=<span class="ruby-constant">SingletonLogger</span>.<span class="ruby-identifier">instance</span>()
+                        <span class="ruby-ivar">@maps</span>={}
+                        <span class="ruby-ivar">@routes</span>=[]
+                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;#{self.class} initiated.&quot;</span>}
+                <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

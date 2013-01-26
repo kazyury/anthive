@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>alphabets (AntHive::ExcelColumnName)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File generators/route_trace.rb, line 15</span>
+                <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">alphabets</span>
+                        <span class="ruby-identifier">result</span>=[]
+                        <span class="ruby-identifier">alpha</span>=<span class="ruby-node">%w(A B C D E F G H I J K L M N O P Q R S T U V W X Y Z)</span>
+                        <span class="ruby-identifier">result</span>=<span class="ruby-identifier">alpha</span>
+                        <span class="ruby-identifier">result</span><span class="ruby-operator">+=</span><span class="ruby-identifier">alpha</span>.<span class="ruby-identifier">collect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">alp</span><span class="ruby-operator">|</span> <span class="ruby-node">&quot;A#{alp}&quot;</span>}
+                        <span class="ruby-identifier">result</span><span class="ruby-operator">+=</span><span class="ruby-identifier">alpha</span>.<span class="ruby-identifier">collect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">alp</span><span class="ruby-operator">|</span> <span class="ruby-node">&quot;B#{alp}&quot;</span>}
+                        <span class="ruby-identifier">result</span><span class="ruby-operator">+=</span><span class="ruby-identifier">alpha</span>.<span class="ruby-identifier">collect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">alp</span><span class="ruby-operator">|</span> <span class="ruby-node">&quot;C#{alp}&quot;</span>}
+                        <span class="ruby-identifier">result</span><span class="ruby-operator">+=</span><span class="ruby-identifier">alpha</span>.<span class="ruby-identifier">collect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">alp</span><span class="ruby-operator">|</span> <span class="ruby-node">&quot;D#{alp}&quot;</span>}
+                        <span class="ruby-identifier">result</span><span class="ruby-operator">+=</span><span class="ruby-identifier">alpha</span>.<span class="ruby-identifier">collect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">alp</span><span class="ruby-operator">|</span> <span class="ruby-node">&quot;E#{alp}&quot;</span>}
+                        <span class="ruby-identifier">result</span><span class="ruby-operator">+=</span><span class="ruby-identifier">alpha</span>.<span class="ruby-identifier">collect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">alp</span><span class="ruby-operator">|</span> <span class="ruby-node">&quot;F#{alp}&quot;</span>}
+                        <span class="ruby-identifier">result</span><span class="ruby-operator">+=</span><span class="ruby-identifier">alpha</span>.<span class="ruby-identifier">collect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">alp</span><span class="ruby-operator">|</span> <span class="ruby-node">&quot;G#{alp}&quot;</span>}
+                        <span class="ruby-identifier">result</span><span class="ruby-operator">+=</span><span class="ruby-identifier">alpha</span>.<span class="ruby-identifier">collect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">alp</span><span class="ruby-operator">|</span> <span class="ruby-node">&quot;H#{alp}&quot;</span>}
+                        <span class="ruby-identifier">result</span><span class="ruby-operator">+=</span><span class="ruby-identifier">alpha</span>.<span class="ruby-identifier">collect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">alp</span><span class="ruby-operator">|</span> <span class="ruby-node">&quot;I#{alp}&quot;</span>}
+                        <span class="ruby-identifier">result</span>=<span class="ruby-identifier">result</span><span class="ruby-operator">-</span><span class="ruby-node">%w(IW IX IY IZ)</span>
+                        <span class="ruby-identifier">result</span>
+                <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

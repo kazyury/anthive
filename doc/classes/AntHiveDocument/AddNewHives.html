@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: AntHiveDocument::AddNewHives</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">AntHiveDocument::AddNewHives</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../files/document_rb.html">
+                document.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+                Object
+            </td>
+        </tr>
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <h2>Add New Hives</h2>
+<p>
+ここまでで、まだ触れていなかったもっとも重要な点。
+「どうやって俺のant達を解析するんだっ！」という突っ込みに対する回答を、この文書で記述します。
+</p>
+<p>
+必要なステップは、単純に1ステップのみです。
+</p>
+<ul>
+<li>解析したいAnt達の実行時ディレクトリ・ツリー全体を、ant-hiveの任意のディレクトリに配置する
+
+</li>
+</ul>
+<p>
+のみです。
+</p>
+<p>
+例えば、antの実行環境が以下のようになっている場合(この例はすごく適当です。)
+</p>
+<pre>
+ build.serv.pjt1:/
+   var/
+     ant/
+       cvs.properties
+   release-tools/
+     ants/
+       build.xml
+       buildApp.xml
+       buildDoc.xml
+       common/
+         cvs.xml
+         compile.xml
+       tmp/
+         checkout/
+           infos/
+             info.properties
+</pre>
+<p>
+ビルドスクリプトの実行環境である、/release-tools/以下全てと、/var/ant/cvs.propertiesをまとめて持ってきて、
+適宜の名称(ここではmy_rootとする)のディレクトリをant-hive以下に作成し、突っ込みます。
+</p>
+<pre>
+ C:\hoge
+     \ant-hive
+       \doc
+       \generators
+       \sample
+       \ant-hive.exe
+       \ant-hive.xml
+       \my_root       &lt;------ ここを仮想的なrootとして、関連するファイル群を
+         \var                 ディレクトリツリーを維持したままでコピーする。
+           \ant
+             \cvs.properties
+         \release-tools
+           \ants
+             \build.xml
+             \buildApp.xml
+             \buildDoc.xml
+             \common
+               \cvs.xml
+               \compile.xml
+             \tmp
+               \checkout
+                 \infos
+                   \info.properties
+</pre>
+<p>
+本当は、システム上の任意のディレクトリに配置することを許可しようと考えているのですが、まだバグが
+取りきれていないようなので、ant-hiveのサブディレクトリの何処かにおいてください。
+</p>
+<p>
+そして、my_rootを仮想のルート・ディレクトリとしてそこからの相対パスで対象のファイルを指定してください。
+この例の場合であれば、
+</p>
+<ul>
+<li>-r+-M,-R オプションで起動する場合
+
+<ul>
+<li>ant-hive -r my_root -M relase-tools/ants/build.xml
+
+</li>
+</ul>
+</li>
+<li>-Hオプションで起動する場合
+
+<ul>
+<li>ant-hive -H my_app
+
+</li>
+<li>ant-hive.xml の追加内容(例)
+
+<pre>
+ &lt;hive name=&quot;my_app&quot;&gt;
+   &lt;root_directory path=&quot;my_root&quot; /&gt;
+   &lt;map file=&quot;relase-tools/ants/build.xml&quot; /&gt;
+   &lt;route file=&quot;relase-tools/ants/build.xml&quot; target=&quot;releaseMyApp&quot; options=&quot;cvs.server=cvs.serv.pjt1,build.server=build.serv.pjt1&quot;/&gt;
+ &lt;/hive&gt;
+</pre>
+</li>
+</ul>
+</li>
+</ul>
+<h3>注意事項</h3>
+<p>
+ant-hiveがROUTE情報を生成する際には、 <a
+href="../AntHive/Evaluater.html">AntHive::Evaluater</a>
+がAntスクリプトを逐次解釈しながら処理を実施します。
+その際に、仮想のルートディレクトリを跨ぐようなファイルを必要とした場合には、例外を発生させます。
+(これは、仮想的なルートディレクトリの外側にあるファイルに対するアクセスはさせるべきでは無いとの設計上の判断によります。)
+</p>
+<p>
+従って、上記の例で仮想ルートディレクトリをmy_root/release-tools/ants
+に設定した場合、MAP生成は動作するかと思いますが、
+ROUTE生成時に/var/ant/cvs.propertiesを参照する処理が入っている場合には、例外が生じます。
+回避するためには、上述のとおり仮想的なルートディレクトリをmy_rotに設定し、そこからの相対パスで、解釈するAntファイルを指定してください。
+</p>
+
+    </div>
+
+
+   </div>
+
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

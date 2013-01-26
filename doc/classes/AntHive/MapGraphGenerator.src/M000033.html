@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>generate (AntHive::MapGraphGenerator)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File generators/map_graph.rb, line 20</span>
+                <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">generate</span>(<span class="ruby-identifier">real_path</span>)
+                        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">project</span>=<span class="ruby-ivar">@hive</span>.<span class="ruby-identifier">maps</span>[<span class="ruby-identifier">real_path</span>] <span class="ruby-comment cmt">#=&gt; AntHive::AntObject::Project</span>
+                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;For requested map( #{real_path} ), got [ #{project} ] map info.&quot;</span>}
+
+                                <span class="ruby-comment cmt"># ProjectからTargetの一覧を取得</span>
+                                <span class="ruby-comment cmt"># それぞれのTargetについて、depends属性, calls属性を取得</span>
+                                <span class="ruby-identifier">project</span>.<span class="ruby-identifier">targets</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">target</span><span class="ruby-operator">|</span>
+
+                                        <span class="ruby-comment cmt"># targetのクラスタへの追加</span>
+                                        <span class="ruby-identifier">append_graphviz_node</span>(<span class="ruby-identifier">real_path</span>, <span class="ruby-identifier">target</span>.<span class="ruby-identifier">name</span>)
+
+                                        <span class="ruby-comment cmt"># 依存関係によるEdgeの追加</span>
+                                        <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">target</span>.<span class="ruby-identifier">depends</span>.<span class="ruby-identifier">empty?</span>
+                                                <span class="ruby-identifier">target</span>.<span class="ruby-identifier">depends</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">dep</span><span class="ruby-operator">|</span> <span class="ruby-identifier">append_graphviz_edge</span>(<span class="ruby-identifier">real_path</span>, <span class="ruby-identifier">dep</span>, <span class="ruby-identifier">real_path</span>, <span class="ruby-identifier">target</span>.<span class="ruby-identifier">name</span>,<span class="ruby-identifier">:depends</span>) }
+                                        <span class="ruby-keyword kw">end</span>
+
+                                        <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">target</span>.<span class="ruby-identifier">calls</span>.<span class="ruby-identifier">empty?</span>
+                                                <span class="ruby-identifier">target</span>.<span class="ruby-identifier">calls</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">cal</span><span class="ruby-operator">|</span>
+                                                        <span class="ruby-identifier">type</span>=<span class="ruby-identifier">cal</span>[<span class="ruby-value">0</span>]
+                                                        <span class="ruby-identifier">path_to</span>=<span class="ruby-identifier">cal</span>[<span class="ruby-value">1</span>]
+                                                        <span class="ruby-identifier">target_to</span>=<span class="ruby-identifier">cal</span>[<span class="ruby-value">2</span>]
+                                                        <span class="ruby-keyword kw">begin</span>
+                                                                <span class="ruby-identifier">path_to</span>=<span class="ruby-constant">RealPath</span>.<span class="ruby-identifier">realpath</span>(<span class="ruby-ivar">@root_directory</span>,<span class="ruby-identifier">path_to</span>)
+                                                        <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">AntHiveError</span>=<span class="ruby-operator">&gt;</span><span class="ruby-identifier">e</span>
+                                                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;During antcalling process of [ #{target} ]@[ #{real_path} ], path:[ #{path_to} ] could not solved.&quot;</span>}
+                                                                <span class="ruby-identifier">path_to</span> = <span class="ruby-keyword kw">yield</span> <span class="ruby-identifier">path_to</span>
+                                                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;path was solved as [ #{path_to} ].&quot;</span>}
+                                                        <span class="ruby-keyword kw">end</span>
+                                                        
+                                                        <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">target_to</span>
+                                                                <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">next_project</span> = <span class="ruby-ivar">@hive</span>.<span class="ruby-identifier">maps</span>[<span class="ruby-identifier">path_to</span>]
+                                                                        <span class="ruby-identifier">target_to</span> = <span class="ruby-identifier">next_project</span>.<span class="ruby-identifier">default</span>
+                                                                <span class="ruby-keyword kw">else</span>
+                                                                        <span class="ruby-identifier">target_to</span> = <span class="ruby-value str">'*** DEFAULT ***'</span>
+                                                                <span class="ruby-keyword kw">end</span>
+                                                        <span class="ruby-keyword kw">end</span>
+
+                                                        <span class="ruby-identifier">path_to</span> = <span class="ruby-value str">'*** AnonAnt ***'</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">path_to</span>
+                                                        <span class="ruby-identifier">append_graphviz_edge</span>(<span class="ruby-identifier">real_path</span>, <span class="ruby-identifier">target</span>.<span class="ruby-identifier">name</span>, <span class="ruby-identifier">path_to</span>, <span class="ruby-identifier">target_to</span>, <span class="ruby-identifier">type</span>)
+                                                }
+                                        <span class="ruby-keyword kw">end</span>
+                                }
+                        <span class="ruby-keyword kw">else</span>
+                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">warn</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;For requested map( #{real_path} ), map did NOT FOUND.&quot;</span>}
+                        <span class="ruby-keyword kw">end</span>
+                <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

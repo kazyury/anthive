@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>load_config_for (AntHive::CUI)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File ui/cui.rb, line 51</span>
+                <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">load_config_for</span>(<span class="ruby-identifier">hivelist</span>)
+                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Loading config from ant-hive.xml for [ #{hivelist.join(',')} ].&quot;</span>}
+                        <span class="ruby-identifier">root</span>=<span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">'ant-hive.xml'</span>)).<span class="ruby-identifier">root</span>
+
+                        <span class="ruby-identifier">hivelist</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">hivename</span><span class="ruby-operator">|</span>
+                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Searching hive named:[ #{hivename} ].&quot;</span>}
+
+                                <span class="ruby-identifier">node</span>=<span class="ruby-keyword kw">nil</span>
+                                <span class="ruby-identifier">root</span>.<span class="ruby-identifier">elements</span>.<span class="ruby-identifier">each</span>(<span class="ruby-node">&quot;./hive[@name=\&quot;#{hivename}\&quot;]&quot;</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">n</span><span class="ruby-operator">|</span> <span class="ruby-identifier">node</span>=<span class="ruby-identifier">n</span> }
+
+                                <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">node</span>
+                                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Hive config named:[ #{hivename} ] was found.&quot;</span>}
+                                        <span class="ruby-identifier">root_dir</span>=<span class="ruby-keyword kw">nil</span>
+                                        <span class="ruby-identifier">map_list</span>=[]
+                                        <span class="ruby-identifier">route_list</span>=[]
+
+                                        <span class="ruby-identifier">node</span>.<span class="ruby-identifier">elements</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">hiveconf</span><span class="ruby-operator">|</span>
+                                                <span class="ruby-identifier">options</span>={}
+                                                <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">hiveconf</span>.<span class="ruby-identifier">name</span>
+                                                <span class="ruby-keyword kw">when</span> <span class="ruby-value str">'root_directory'</span>
+                                                        <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">root_directory</span>=(<span class="ruby-identifier">hiveconf</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'path'</span>])
+                                                <span class="ruby-keyword kw">when</span> <span class="ruby-value str">'map'</span>
+                                                        <span class="ruby-identifier">map_list</span>.<span class="ruby-identifier">push</span> <span class="ruby-identifier">hiveconf</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'file'</span>]
+                                                <span class="ruby-keyword kw">when</span> <span class="ruby-value str">'route'</span>
+                                                        <span class="ruby-identifier">file</span>=<span class="ruby-identifier">hiveconf</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'file'</span>]
+                                                        <span class="ruby-identifier">target</span>=<span class="ruby-identifier">hiveconf</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'target'</span>]
+                                                        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">hiveconf</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'with_diagram'</span>]<span class="ruby-operator">==</span><span class="ruby-value str">&quot;true&quot;</span>
+                                                                <span class="ruby-identifier">with_diagram</span>=<span class="ruby-keyword kw">true</span> 
+                                                        <span class="ruby-keyword kw">else</span>
+                                                                <span class="ruby-identifier">with_diagram</span>=<span class="ruby-keyword kw">false</span>
+                                                        <span class="ruby-keyword kw">end</span>
+                                                        <span class="ruby-identifier">hiveconf</span>.<span class="ruby-identifier">elements</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">option_element</span><span class="ruby-operator">|</span>
+                                                                <span class="ruby-identifier">key</span>=<span class="ruby-identifier">option_element</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'key'</span>]
+                                                                <span class="ruby-identifier">val</span>=<span class="ruby-identifier">option_element</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'val'</span>]
+                                                                <span class="ruby-identifier">raise</span> <span class="ruby-constant">AntHiveError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">&quot;Children of 'route' element should be 'options' only.&quot;</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">option_element</span>.<span class="ruby-identifier">name</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'options'</span>
+                                                                <span class="ruby-identifier">raise</span> <span class="ruby-constant">AntHiveError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">&quot;'option' element should have 'key','val' attributes.&quot;</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">key</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">val</span>
+
+                                                                <span class="ruby-identifier">options</span>[<span class="ruby-identifier">key</span>.<span class="ruby-identifier">strip</span>]=<span class="ruby-identifier">val</span>.<span class="ruby-identifier">strip</span>
+                                                        }
+                                                        <span class="ruby-identifier">route_list</span>.<span class="ruby-identifier">push</span> [ <span class="ruby-identifier">file</span>, <span class="ruby-identifier">target</span>, <span class="ruby-identifier">options</span>, <span class="ruby-identifier">with_diagram</span> ]
+                                                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;File:[ #{file} ], Target:[ #{target} ], Options:[ #{options} ]&quot;</span>}
+                                                <span class="ruby-keyword kw">else</span>
+                                                <span class="ruby-keyword kw">end</span>
+                                        }
+                                        <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">map_request</span>(<span class="ruby-identifier">map_list</span>)
+                                        <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">route_request</span>(<span class="ruby-identifier">route_list</span>)
+                                        <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">run</span>()
+                                <span class="ruby-keyword kw">else</span>
+                                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">error</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Hive config named:[ #{hivename} ] was NOT found.&quot;</span>}
+                                <span class="ruby-keyword kw">end</span>
+                        }
+                <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

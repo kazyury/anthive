@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>evaluate_target (AntHive::Evaluater)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File evaluater.rb, line 285</span>
+                <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">evaluate_target</span>(<span class="ruby-identifier">name</span>)
+
+                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Target evaluation start for [ #{name} ] @ [ #{@project.real_path} ].&quot;</span>}
+                        <span class="ruby-identifier">target</span>=<span class="ruby-ivar">@project</span>.<span class="ruby-identifier">find_target</span>(<span class="ruby-identifier">name</span>)
+                        <span class="ruby-identifier">raise</span> <span class="ruby-constant">AntHiveError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-node">&quot;Target:[ #{name} ] was not found.&quot;</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">target</span>
+                        
+                        <span class="ruby-comment cmt"># 開始タグを記録</span>
+                        <span class="ruby-identifier">target_start</span>(<span class="ruby-identifier">target</span>)
+                        
+                        <span class="ruby-comment cmt"># depends 属性の評価</span>
+                        <span class="ruby-identifier">target</span>.<span class="ruby-identifier">depends</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">dep</span><span class="ruby-operator">|</span>
+                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Target [ #{name} ] depends on [ #{dep} ].Process it first.&quot;</span>}
+                                <span class="ruby-identifier">evaluate_target</span>(<span class="ruby-identifier">dep</span>)
+                        }
+
+                        <span class="ruby-comment cmt"># if属性、unless属性を評価したうえで実行可否を判断するためのフラグ</span>
+                        <span class="ruby-identifier">evaluate_this</span> = <span class="ruby-keyword kw">true</span>
+                        
+                        <span class="ruby-comment cmt"># if 属性の評価</span>
+                        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">condition_if</span>=<span class="ruby-identifier">target</span>.<span class="ruby-identifier">if</span>
+                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Target [ #{name} ] needs to be set property:[ #{condition_if} ].Examine it.&quot;</span>}
+                                <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@table</span>.<span class="ruby-identifier">registed?</span>(<span class="ruby-identifier">condition_if</span>)
+                                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Property:[ #{condition_if} ] is not set.Target [ #{name} ] is not evaluated.&quot;</span>}
+                                        <span class="ruby-identifier">evaluate_this</span> = <span class="ruby-keyword kw">false</span>
+                                <span class="ruby-keyword kw">else</span>
+                                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Property:[ #{condition_if} ] is set.&quot;</span>}
+                                <span class="ruby-keyword kw">end</span>
+                        <span class="ruby-keyword kw">else</span>
+                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Target [ #{name} ] has no dependency for 'if' condition.&quot;</span>}
+                        <span class="ruby-keyword kw">end</span>
+
+                        <span class="ruby-comment cmt"># unless 属性の評価</span>
+                        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">condition_unless</span>=<span class="ruby-identifier">target</span>.<span class="ruby-identifier">unless</span>
+                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Target [ #{name} ] needs NOT to be set property:[ #{condition_unless} ].Examine it.&quot;</span>}
+                                <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@table</span>.<span class="ruby-identifier">registed?</span>(<span class="ruby-identifier">condition_unless</span>)
+                                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Property:[ #{condition_unless} ] is set.Target [ #{name} ] is not evaluated.&quot;</span>}
+                                        <span class="ruby-identifier">evaluate_this</span> = <span class="ruby-keyword kw">false</span>
+                                <span class="ruby-keyword kw">else</span>
+                                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Property:[ #{condition_unless} ] is not set.&quot;</span>}
+                                <span class="ruby-keyword kw">end</span>
+                        <span class="ruby-keyword kw">else</span>
+                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Target [ #{name} ] has no dependency for 'unless' condition.&quot;</span>}
+                        <span class="ruby-keyword kw">end</span>
+
+                        <span class="ruby-comment cmt"># この時点でevaluate_this が true の場合のみtarget内部の評価を行う。</span>
+                        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">evaluate_this</span>
+                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Evaluate target [ #{name} ] callings.&quot;</span>}
+                                <span class="ruby-identifier">target</span>.<span class="ruby-identifier">source</span>.<span class="ruby-identifier">elements</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">elm</span><span class="ruby-operator">|</span>
+                                        <span class="ruby-identifier">evaluate_element</span>(<span class="ruby-identifier">elm</span>)
+                                }
+                        <span class="ruby-keyword kw">end</span>
+                        
+                        <span class="ruby-comment cmt"># 終了タグを記録</span>
+                        <span class="ruby-identifier">target_end</span>(<span class="ruby-identifier">target</span>)
+                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Target evaluation for [ #{name} ] end.&quot;</span>}
+
+                        <span class="ruby-ivar">@steps</span>
+                <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>expandables (AntHive::PropertyTable)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File property_table.rb, line 151</span>
+                <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">expandables</span>(<span class="ruby-identifier">str</span>)
+
+                        <span class="ruby-comment cmt"># 1文字ごとに分割して処理</span>
+                        <span class="ruby-comment cmt">#</span>
+                        <span class="ruby-comment cmt"># - process_1 :: $が見つかった場合にON,$直後の{が見つかったらOFF</span>
+                        <span class="ruby-comment cmt"># - process_2 :: $直後の{が見つかったらON,}でOFF</span>
+                        <span class="ruby-comment cmt"># - buffer :: process_2がONの時の、文字格納領域</span>
+                        <span class="ruby-comment cmt"># - result :: }で確定した文字列の格納領域</span>
+                        <span class="ruby-identifier">process_1</span>=<span class="ruby-keyword kw">false</span>
+                        <span class="ruby-identifier">process_2</span>=<span class="ruby-keyword kw">false</span>
+                        <span class="ruby-identifier">buffer</span>=<span class="ruby-value str">&quot;&quot;</span>
+                        <span class="ruby-identifier">result</span>=[]
+
+                        <span class="ruby-identifier">str</span>.<span class="ruby-identifier">split</span>(<span class="ruby-regexp re">//</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">s</span><span class="ruby-operator">|</span>
+                                <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">s</span>
+                                <span class="ruby-keyword kw">when</span> <span class="ruby-value str">'$'</span>
+                                        <span class="ruby-identifier">process_1</span>=<span class="ruby-keyword kw">true</span>
+                                <span class="ruby-keyword kw">when</span> <span class="ruby-value str">'{'</span>
+                                        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">process_1</span><span class="ruby-operator">==</span><span class="ruby-keyword kw">true</span>
+                                                <span class="ruby-identifier">process_1</span>=<span class="ruby-keyword kw">false</span>
+                                                <span class="ruby-identifier">process_2</span>=<span class="ruby-keyword kw">true</span>
+                                                <span class="ruby-identifier">buffer</span>=<span class="ruby-value str">&quot;&quot;</span>
+                                        <span class="ruby-keyword kw">end</span>
+                                <span class="ruby-keyword kw">when</span> <span class="ruby-value str">'}'</span>
+                                        <span class="ruby-identifier">process_2</span>=<span class="ruby-keyword kw">false</span>
+                                        <span class="ruby-identifier">result</span>.<span class="ruby-identifier">push</span> <span class="ruby-identifier">buffer</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">buffer</span><span class="ruby-operator">==</span><span class="ruby-value str">&quot;&quot;</span>
+                                        <span class="ruby-identifier">buffer</span>=<span class="ruby-value str">&quot;&quot;</span>
+                                <span class="ruby-keyword kw">else</span>
+                                        <span class="ruby-identifier">process_1</span>=<span class="ruby-keyword kw">false</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">process_1</span><span class="ruby-operator">==</span><span class="ruby-keyword kw">true</span>
+                                        <span class="ruby-identifier">buffer</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">s</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">process_2</span><span class="ruby-operator">==</span><span class="ruby-keyword kw">true</span>
+                                <span class="ruby-keyword kw">end</span>
+                        <span class="ruby-keyword kw">end</span>
+
+                        <span class="ruby-identifier">result</span>
+                <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

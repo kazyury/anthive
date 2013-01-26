@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>new (AntHive::PFD_DataFlow)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File generators/pfd_graph.rb, line 60</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">from</span>, <span class="ruby-identifier">to</span>, <span class="ruby-identifier">description</span>)
+      <span class="ruby-ivar">@from</span>=<span class="ruby-identifier">from</span>
+      <span class="ruby-ivar">@to</span>=<span class="ruby-identifier">to</span>
+      <span class="ruby-ivar">@desc</span>=<span class="ruby-identifier">description</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@from</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">PFD_Process</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@to</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">PFD_Process</span>)
+        <span class="ruby-ivar">@style</span>=<span class="ruby-value str">&quot;solid&quot;</span>
+      <span class="ruby-keyword kw">else</span>
+        <span class="ruby-ivar">@style</span>=<span class="ruby-value str">&quot;dashed&quot;</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

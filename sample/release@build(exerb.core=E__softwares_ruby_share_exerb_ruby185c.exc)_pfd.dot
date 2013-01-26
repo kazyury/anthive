@@ -1,0 +1,70 @@
+digraph G {
+	graph [ rankdir=TB ];
+	node  [ shape=rect ];
+	edge  [ arrowhead=vee ];
+	""    [ style = invis ];
+
+
+subgraph cluster_1 {
+  label = "sample/build.xml" 
+  9899640 [ label="TOPLEVEL" shape="component" style="filled" fillcolor="orange1" ]
+  9899120 [ label="release" shape="component" style="filled" fillcolor="orange1" ]
+  9898980 [ label="run_unit_test" shape="component" style="filled" fillcolor="orange1" ]
+  9898870 [ label="TOPLEVEL" shape="component" style="filled" fillcolor="orange1" ]
+  9898430 [ label="generate_docs" shape="component" style="filled" fillcolor="orange1" ]
+  9898130 [ label="TOPLEVEL" shape="component" style="filled" fillcolor="orange1" ]
+  9897690 [ label="generate_exe" shape="component" style="filled" fillcolor="orange1" ]
+  9897620 [ label="make_recipe" shape="component" style="filled" fillcolor="orange1" ]
+  9897180 [ label="package" shape="component" style="filled" fillcolor="orange1" ]
+  {rank = same; 9899640 9899120 9898980 9898870 9898430 9898130 9897690 9897620 9897180; }}
+
+
+9899320 [ label="VERSION" shape="note" style="filled" fillcolor="mintcream"]
+9898630 [ label="VERSION" shape="note" style="filled" fillcolor="mintcream"]
+9897890 [ label="VERSION" shape="note" style="filled" fillcolor="mintcream"]
+9896460 [ label="../anthive_v0.5.0(alpha)" shape="tab" style="filled" fillcolor="khaki1"]
+9896180 [ label="../anthive_v0.5.0(alpha)" shape="tab" style="filled" fillcolor="khaki1"]
+9895750 [ label="ant-hive.xml.sample" shape="note" style="filled" fillcolor="mintcream"]
+9895700 [ label="../anthive_v0.5.0(alpha)/ant-hive.xml" shape="note" style="filled" fillcolor="mintcream"]
+9895170 [ label="ant-hive.exe" shape="note" style="filled" fillcolor="mintcream"]
+9895120 [ label="../anthive_v0.5.0(alpha)" shape="tab" style="filled" fillcolor="khaki1"]
+9894600 [ label="sample.svg" shape="note" style="filled" fillcolor="mintcream"]
+9894550 [ label="../anthive_v0.5.0(alpha)" shape="tab" style="filled" fillcolor="khaki1"]
+9894030 [ label="sample.dot" shape="note" style="filled" fillcolor="mintcream"]
+9893980 [ label="../anthive_v0.5.0(alpha)" shape="tab" style="filled" fillcolor="khaki1"]
+9893460 [ label="generators/map.erb" shape="note" style="filled" fillcolor="mintcream"]
+9893410 [ label="../anthive_v0.5.0(alpha)/generators" shape="tab" style="filled" fillcolor="khaki1"]
+9892890 [ label="generators/template.xlt" shape="note" style="filled" fillcolor="mintcream"]
+9892840 [ label="../anthive_v0.5.0(alpha)/generators" shape="tab" style="filled" fillcolor="khaki1"]
+9890950 [ label="../anthive_v0.5.0(alpha)" shape="tab" style="filled" fillcolor="khaki1"]
+9890900 [ label="../anthive_v0.5.0(alpha).tar" shape="note" style="filled" fillcolor="mintcream"]
+
+9899320 -> 9899640 [ label="load properties" style="dashed"]
+9899640 -> 9899120 [ label="" style="solid"]
+9899120 -> 9898980 [ label="" style="solid"]
+9898980 -> 9898870 [ label="" style="solid"]
+9898630 -> 9898870 [ label="load properties" style="dashed"]
+9898870 -> 9898430 [ label="" style="solid"]
+9898430 -> 9898130 [ label="" style="solid"]
+9897890 -> 9898130 [ label="load properties" style="dashed"]
+9898130 -> 9897690 [ label="" style="solid"]
+9897690 -> 9897620 [ label="" style="solid"]
+9897620 -> 9897180 [ label="" style="solid"]
+9897180 -> 9896460 [ label="delete" style="dashed"]
+9897180 -> 9896180 [ label="mkdir" style="dashed"]
+9895750 -> 9897180 [ label="copy" style="dashed"]
+9897180 -> 9895700 [ label="copy" style="dashed"]
+9895170 -> 9897180 [ label="copy" style="dashed"]
+9897180 -> 9895120 [ label="copy" style="dashed"]
+9894600 -> 9897180 [ label="copy" style="dashed"]
+9897180 -> 9894550 [ label="copy" style="dashed"]
+9894030 -> 9897180 [ label="copy" style="dashed"]
+9897180 -> 9893980 [ label="copy" style="dashed"]
+9893460 -> 9897180 [ label="copy" style="dashed"]
+9897180 -> 9893410 [ label="copy" style="dashed"]
+9892890 -> 9897180 [ label="copy" style="dashed"]
+9897180 -> 9892840 [ label="copy" style="dashed"]
+9890950 -> 9897180 [ label="tar" style="dashed"]
+9897180 -> 9890900 [ label="tar" style="dashed"]
+}
+

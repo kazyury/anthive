@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>read_property (PropertyFile)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File misc/property_file.rb, line 14</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">read_property</span>(<span class="ruby-identifier">file</span>,<span class="ruby-operator">&amp;</span><span class="ruby-identifier">b</span>)
+                <span class="ruby-identifier">raise</span> <span class="ruby-constant">RuntimeError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-node">&quot;Requested file [ #{file} ] was not found.&quot;</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">file?</span>(<span class="ruby-identifier">file</span>)
+                <span class="ruby-identifier">buffer</span>={}
+                <span class="ruby-identifier">contents</span>=<span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>(<span class="ruby-identifier">file</span>)
+
+                <span class="ruby-comment cmt"># コメント(#以降改行文字まで)を削除する。</span>
+                <span class="ruby-comment cmt"># 連続する空白を1つの空白に置換する。(改行文字は改行文字のままで)</span>
+                <span class="ruby-identifier">contents</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp re">/#.*?$/</span>,<span class="ruby-value str">''</span>) 
+                <span class="ruby-identifier">contents</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp re">/\t/</span>,<span class="ruby-value str">' '</span>)
+                <span class="ruby-identifier">contents</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp re">/\n{2,}/</span>,<span class="ruby-value str">&quot;\n&quot;</span>)
+                <span class="ruby-identifier">contents</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp re">/\t{2,}/</span>,<span class="ruby-value str">&quot; &quot;</span>)
+                <span class="ruby-identifier">contents</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp re">/ {2,}/</span>,<span class="ruby-value str">&quot; &quot;</span>)
+                
+                <span class="ruby-comment cmt">#     空白行を除去する。</span>
+                <span class="ruby-identifier">contents</span>=<span class="ruby-identifier">contents</span>.<span class="ruby-identifier">split</span>(<span class="ruby-value str">&quot;\n&quot;</span>).<span class="ruby-identifier">collect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span> <span class="ruby-identifier">line</span>.<span class="ruby-identifier">strip</span> }.<span class="ruby-identifier">delete_if</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span> <span class="ruby-identifier">line</span><span class="ruby-operator">==</span><span class="ruby-value str">''</span> }.<span class="ruby-identifier">join</span>(<span class="ruby-value str">&quot;\n&quot;</span>)
+
+                <span class="ruby-comment cmt"># エスケープされた改行文字を空文字に変換する。</span>
+                <span class="ruby-identifier">contents</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp re">/\\\n/</span>,<span class="ruby-value str">''</span>)
+
+                <span class="ruby-comment cmt">#     各行について</span>
+                <span class="ruby-comment cmt">#      '='が含まれていない場合には例外</span>
+                <span class="ruby-comment cmt">#      '=' の後ろが空白文字のみの場合にはwarn</span>
+                <span class="ruby-identifier">contents</span>.<span class="ruby-identifier">split</span>(<span class="ruby-value str">&quot;\n&quot;</span>).<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>
+                        <span class="ruby-identifier">raise</span> <span class="ruby-constant">RuntimeError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-node">&quot;In [ #{file} ], line without '=' appears. at [ #{line} ].&quot;</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">line</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-value str">'='</span>)
+
+                        <span class="ruby-identifier">line</span>.<span class="ruby-identifier">strip!</span>
+                        <span class="ruby-identifier">key</span>,<span class="ruby-identifier">val</span>=<span class="ruby-identifier">line</span>.<span class="ruby-identifier">split</span>(<span class="ruby-value str">'='</span>)
+
+                        <span class="ruby-comment cmt"># それぞれの空白を除去</span>
+                        <span class="ruby-comment cmt"># '='の後に文字が存在しない場合には警告を表示(-v付きでruby起動時のみ)し、valを空文字に設定する。</span>
+                        <span class="ruby-identifier">key</span>.<span class="ruby-identifier">strip!</span>
+                        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">val</span>
+                                <span class="ruby-identifier">val</span>.<span class="ruby-identifier">strip!</span>
+                        <span class="ruby-keyword kw">else</span>
+                                <span class="ruby-identifier">val</span>=<span class="ruby-value str">''</span>
+                        <span class="ruby-keyword kw">end</span>
+                        <span class="ruby-identifier">buffer</span>[<span class="ruby-identifier">key</span>]=<span class="ruby-identifier">val</span>
+                        <span class="ruby-keyword kw">yield</span> <span class="ruby-identifier">key</span>,<span class="ruby-identifier">val</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">block_given?</span>
+                }
+                <span class="ruby-identifier">buffer</span>
+        <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

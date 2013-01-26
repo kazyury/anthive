@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>outfile_for_route (AntHive::OutFileName)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File utils.rb, line 26</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">outfile_for_route</span>(<span class="ruby-identifier">route</span>,<span class="ruby-identifier">suffix</span>)
+                        <span class="ruby-identifier">fso</span>=<span class="ruby-constant">WIN32OLE</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">'Scripting.FileSystemObject'</span>)
+                        <span class="ruby-identifier">outdir</span>=<span class="ruby-constant">File</span>.<span class="ruby-identifier">dirname</span>(<span class="ruby-identifier">route</span>.<span class="ruby-identifier">file</span>)
+                        <span class="ruby-identifier">basename</span>=<span class="ruby-identifier">route</span>.<span class="ruby-identifier">to_s</span>
+                        <span class="ruby-identifier">specialchar</span>=<span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">'[\&lt;\&gt;\?\[\]\:\|\*\/\\\\]'</span>)
+                        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">specialchar</span><span class="ruby-operator">=~</span><span class="ruby-identifier">basename</span>
+                                <span class="ruby-identifier">basename</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-identifier">specialchar</span>,<span class="ruby-value str">'_'</span>)
+                        <span class="ruby-keyword kw">end</span>
+                        <span class="ruby-identifier">outfile</span> =<span class="ruby-identifier">fso</span>.<span class="ruby-constant">GetAbsolutePathName</span>(<span class="ruby-node">&quot;#{outdir}/#{basename}#{suffix}&quot;</span>)
+      <span class="ruby-identifier">outfile</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>construct (AntHive::PFDGraphGenerator)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File generators/pfd_graph.rb, line 122</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">construct</span>(<span class="ruby-identifier">route</span>)
+      <span class="ruby-identifier">process_stack</span>=[]
+      <span class="ruby-identifier">route</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">step</span><span class="ruby-operator">|</span>
+        <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">step</span>.<span class="ruby-identifier">tag</span>
+        <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:toplevel_start</span>
+          <span class="ruby-identifier">push_process</span>(<span class="ruby-value str">'TOPLEVEL'</span>,<span class="ruby-identifier">step</span>.<span class="ruby-identifier">antpath</span>,<span class="ruby-identifier">process_stack</span>)
+        <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:toplevel_end</span>
+<span class="ruby-comment cmt">#          process=process_stack.pop</span>
+<span class="ruby-comment cmt">#          raise AntHiveError.new(&quot;[ Bug ] Toplevel_start and end missed.&quot;) unless process == PFD_Process.new(&quot;TOPLEVEL&quot;,step.antpath)</span>
+        <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:target_start</span>
+          <span class="ruby-identifier">push_process</span>(<span class="ruby-identifier">step</span>.<span class="ruby-identifier">current_target</span>,<span class="ruby-identifier">step</span>.<span class="ruby-identifier">antpath</span>,<span class="ruby-identifier">process_stack</span>)
+        <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:target_end</span>
+<span class="ruby-comment cmt">#          process=process_stack.pop</span>
+<span class="ruby-comment cmt">#          raise AntHiveError.new(&quot;[ Bug ] Target_start and end missed.&quot;) unless process == PFD_Process.new(step.current_target,step.antpath)</span>
+        <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:step</span>
+          <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">step</span>.<span class="ruby-identifier">node_name</span>
+          <span class="ruby-keyword kw">when</span> <span class="ruby-value str">''</span>
+            <span class="ruby-comment cmt"># enclosed tag</span>
+
+          <span class="ruby-keyword kw">when</span> <span class="ruby-value str">'antcall'</span>,<span class="ruby-value str">'ant'</span>,<span class="ruby-value str">'subant'</span>,<span class="ruby-value str">'echo'</span>,<span class="ruby-value str">'fileset'</span>,<span class="ruby-value str">'exec'</span>,<span class="ruby-value str">'arg'</span>
+            <span class="ruby-comment cmt"># do nothing</span>
+
+          <span class="ruby-keyword kw">when</span> <span class="ruby-value str">'property'</span>
+            <span class="ruby-identifier">raise</span> <span class="ruby-constant">AntHiveError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">&quot;[ Bug ] property step is not REXML::Element.&quot;</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">step</span>.<span class="ruby-identifier">node</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">Element</span>)
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">property_file</span>=<span class="ruby-identifier">step</span>.<span class="ruby-identifier">node</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'file'</span>]
+              <span class="ruby-identifier">property_file</span>=<span class="ruby-identifier">step</span>.<span class="ruby-identifier">evaluated_value</span>.<span class="ruby-identifier">scan</span>(<span class="ruby-regexp re">/\sfile=[\&quot;\']([^\&quot;\']+)[\&quot;\']/</span>).<span class="ruby-identifier">flatten</span>.<span class="ruby-identifier">first</span>
+              <span class="ruby-identifier">current_process</span>=<span class="ruby-identifier">process_stack</span>.<span class="ruby-identifier">last</span>
+              <span class="ruby-identifier">current_process</span>=<span class="ruby-constant">PFD_Process</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">''</span>,<span class="ruby-value str">''</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">current_process</span>
+              <span class="ruby-identifier">store</span>=<span class="ruby-constant">PFD_DataStore</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">property_file</span>,<span class="ruby-value str">'note'</span>)
+              <span class="ruby-identifier">flow</span>=<span class="ruby-constant">PFD_DataFlow</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">store</span>, <span class="ruby-identifier">current_process</span>,<span class="ruby-value str">'load properties'</span>)
+              <span class="ruby-identifier">regist_datastore</span> <span class="ruby-identifier">store</span>
+              <span class="ruby-identifier">regist_dataflow</span> <span class="ruby-identifier">flow</span>
+            <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">step</span>.<span class="ruby-identifier">node</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'name'</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">step</span>.<span class="ruby-identifier">node</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'environment'</span>]
+              <span class="ruby-comment cmt"># do nothing at PFD. it does not read/write from datastore.</span>
+            <span class="ruby-keyword kw">else</span>
+              <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">warn</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;property task like [ #{step.node} ] not implemented.&quot;</span>}
+            <span class="ruby-keyword kw">end</span>
+
+
+          <span class="ruby-keyword kw">when</span> <span class="ruby-value str">'delete'</span>
+            <span class="ruby-identifier">raise</span> <span class="ruby-constant">AntHiveError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">&quot;[ Bug ] delete step is not REXML::Element.&quot;</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">step</span>.<span class="ruby-identifier">node</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">Element</span>)
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">target_dir</span>=<span class="ruby-identifier">step</span>.<span class="ruby-identifier">node</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'dir'</span>]
+              <span class="ruby-identifier">target_dir</span>=<span class="ruby-identifier">step</span>.<span class="ruby-identifier">evaluated_value</span>.<span class="ruby-identifier">scan</span>(<span class="ruby-regexp re">/\sdir=[\&quot;\']([^\&quot;\']+)[\&quot;\']/</span>).<span class="ruby-identifier">flatten</span>.<span class="ruby-identifier">first</span>
+              <span class="ruby-identifier">current_process</span>=<span class="ruby-identifier">process_stack</span>.<span class="ruby-identifier">last</span>
+              <span class="ruby-identifier">current_process</span>=<span class="ruby-constant">PFD_Process</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">''</span>,<span class="ruby-value str">''</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">current_process</span>
+              <span class="ruby-identifier">store</span>=<span class="ruby-constant">PFD_DataStore</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">target_dir</span>,<span class="ruby-value str">'tab'</span>)
+              <span class="ruby-identifier">flow</span>=<span class="ruby-constant">PFD_DataFlow</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">current_process</span>,<span class="ruby-identifier">store</span>,<span class="ruby-value str">'delete'</span>)
+              <span class="ruby-identifier">regist_datastore</span> <span class="ruby-identifier">store</span>
+              <span class="ruby-identifier">regist_dataflow</span> <span class="ruby-identifier">flow</span>
+            <span class="ruby-keyword kw">else</span>
+              <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">warn</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;delete task like [ #{step.node} ] not implemented.&quot;</span>}
+            <span class="ruby-keyword kw">end</span>
+
+          <span class="ruby-keyword kw">when</span> <span class="ruby-value str">'mkdir'</span>
+            <span class="ruby-identifier">raise</span> <span class="ruby-constant">AntHiveError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">&quot;[ Bug ] mkdir step is not REXML::Element.&quot;</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">step</span>.<span class="ruby-identifier">node</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">Element</span>)
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">target_dir</span>=<span class="ruby-identifier">step</span>.<span class="ruby-identifier">node</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'dir'</span>]
+              <span class="ruby-identifier">target_dir</span>=<span class="ruby-identifier">step</span>.<span class="ruby-identifier">evaluated_value</span>.<span class="ruby-identifier">scan</span>(<span class="ruby-regexp re">/\sdir=[\&quot;\']([^\&quot;\']+)[\&quot;\']/</span>).<span class="ruby-identifier">flatten</span>.<span class="ruby-identifier">first</span>
+              <span class="ruby-identifier">current_process</span>=<span class="ruby-identifier">process_stack</span>.<span class="ruby-identifier">last</span>
+              <span class="ruby-identifier">current_process</span>=<span class="ruby-constant">PFD_Process</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">''</span>,<span class="ruby-value str">''</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">current_process</span>
+              <span class="ruby-identifier">store</span>=<span class="ruby-constant">PFD_DataStore</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">target_dir</span>,<span class="ruby-value str">'tab'</span>)
+              <span class="ruby-identifier">flow</span>=<span class="ruby-constant">PFD_DataFlow</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">current_process</span>,<span class="ruby-identifier">store</span>,<span class="ruby-value str">'mkdir'</span>)
+              <span class="ruby-identifier">regist_datastore</span> <span class="ruby-identifier">store</span>
+              <span class="ruby-identifier">regist_dataflow</span> <span class="ruby-identifier">flow</span>
+            <span class="ruby-keyword kw">else</span>
+              <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">warn</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;mkdir task like [ #{step.node} ] not implemented.&quot;</span>}
+            <span class="ruby-keyword kw">end</span>
+
+          <span class="ruby-keyword kw">when</span> <span class="ruby-value str">'copy'</span>
+            <span class="ruby-identifier">raise</span> <span class="ruby-constant">AntHiveError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">&quot;[ Bug ] copy step is not REXML::Element.&quot;</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">step</span>.<span class="ruby-identifier">node</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">Element</span>)
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">step</span>.<span class="ruby-identifier">node</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'file'</span>] <span class="ruby-operator">&amp;&amp;</span> ( <span class="ruby-identifier">step</span>.<span class="ruby-identifier">node</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'tofile'</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">step</span>.<span class="ruby-identifier">node</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'todir'</span>] )
+              <span class="ruby-identifier">from</span>=<span class="ruby-identifier">step</span>.<span class="ruby-identifier">evaluated_value</span>.<span class="ruby-identifier">scan</span>(<span class="ruby-regexp re">/\sfile=[\&quot;\']([^\&quot;\']+)[\&quot;\']/</span>).<span class="ruby-identifier">flatten</span>.<span class="ruby-identifier">first</span>
+              <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">step</span>.<span class="ruby-identifier">node</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'tofile'</span>] 
+                <span class="ruby-identifier">to</span>=<span class="ruby-identifier">step</span>.<span class="ruby-identifier">evaluated_value</span>.<span class="ruby-identifier">scan</span>(<span class="ruby-regexp re">/\stofile=[\&quot;\']([^\&quot;\']+)[\&quot;\']/</span>).<span class="ruby-identifier">flatten</span>.<span class="ruby-identifier">first</span>
+                <span class="ruby-identifier">shape</span>=<span class="ruby-value str">'note'</span>
+              <span class="ruby-keyword kw">else</span>
+                <span class="ruby-identifier">to</span>=<span class="ruby-identifier">step</span>.<span class="ruby-identifier">evaluated_value</span>.<span class="ruby-identifier">scan</span>(<span class="ruby-regexp re">/\stodir=[\&quot;\']([^\&quot;\']+)[\&quot;\']/</span>).<span class="ruby-identifier">flatten</span>.<span class="ruby-identifier">first</span>
+                <span class="ruby-identifier">shape</span>=<span class="ruby-value str">'tab'</span>
+              <span class="ruby-keyword kw">end</span>
+              <span class="ruby-identifier">current_process</span>=<span class="ruby-identifier">process_stack</span>.<span class="ruby-identifier">last</span>
+              <span class="ruby-identifier">current_process</span>=<span class="ruby-constant">PFD_Process</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">''</span>,<span class="ruby-value str">''</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">current_process</span>
+              <span class="ruby-identifier">store_from</span>=<span class="ruby-constant">PFD_DataStore</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">from</span>,<span class="ruby-value str">'note'</span>)
+              <span class="ruby-identifier">store_to</span>=<span class="ruby-constant">PFD_DataStore</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">to</span>,<span class="ruby-identifier">shape</span>)
+              <span class="ruby-identifier">flow_from</span>=<span class="ruby-constant">PFD_DataFlow</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">store_from</span>,<span class="ruby-identifier">current_process</span>,<span class="ruby-value str">'copy'</span>)
+              <span class="ruby-identifier">flow_to</span>=<span class="ruby-constant">PFD_DataFlow</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">current_process</span>,<span class="ruby-identifier">store_to</span>,<span class="ruby-value str">'copy'</span>)
+              <span class="ruby-identifier">regist_datastore</span> <span class="ruby-identifier">store_from</span>
+              <span class="ruby-identifier">regist_datastore</span> <span class="ruby-identifier">store_to</span>
+              <span class="ruby-identifier">regist_dataflow</span> <span class="ruby-identifier">flow_from</span>
+              <span class="ruby-identifier">regist_dataflow</span> <span class="ruby-identifier">flow_to</span>
+            <span class="ruby-keyword kw">else</span>
+              <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">warn</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;copy task like [ #{step.node} ] not implemented.&quot;</span>}
+            <span class="ruby-keyword kw">end</span>
+
+          <span class="ruby-keyword kw">when</span> <span class="ruby-value str">'tar'</span>
+            <span class="ruby-identifier">raise</span> <span class="ruby-constant">AntHiveError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">&quot;[ Bug ] tar step is not REXML::Element.&quot;</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">step</span>.<span class="ruby-identifier">node</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">Element</span>)
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">step</span>.<span class="ruby-identifier">node</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'destfile'</span>] <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">step</span>.<span class="ruby-identifier">node</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'basedir'</span>]
+              <span class="ruby-identifier">from</span>=<span class="ruby-identifier">step</span>.<span class="ruby-identifier">evaluated_value</span>.<span class="ruby-identifier">scan</span>(<span class="ruby-regexp re">/\sbasedir=[\&quot;\']([^\&quot;\']+)[\&quot;\']/</span>).<span class="ruby-identifier">flatten</span>.<span class="ruby-identifier">first</span>
+              <span class="ruby-identifier">to</span>=<span class="ruby-identifier">step</span>.<span class="ruby-identifier">evaluated_value</span>.<span class="ruby-identifier">scan</span>(<span class="ruby-regexp re">/\sdestfile=[\&quot;\']([^\&quot;\']+)[\&quot;\']/</span>).<span class="ruby-identifier">flatten</span>.<span class="ruby-identifier">first</span>
+              <span class="ruby-identifier">current_process</span>=<span class="ruby-identifier">process_stack</span>.<span class="ruby-identifier">last</span>
+              <span class="ruby-identifier">current_process</span>=<span class="ruby-constant">PFD_Process</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">''</span>,<span class="ruby-value str">''</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">current_process</span>
+              <span class="ruby-identifier">store_from</span>=<span class="ruby-constant">PFD_DataStore</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">from</span>,<span class="ruby-value str">'tab'</span>)
+              <span class="ruby-identifier">store_to</span>=<span class="ruby-constant">PFD_DataStore</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">to</span>,<span class="ruby-value str">'note'</span>)
+              <span class="ruby-identifier">flow_from</span>=<span class="ruby-constant">PFD_DataFlow</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">store_from</span>,<span class="ruby-identifier">current_process</span>,<span class="ruby-value str">'tar'</span>)
+              <span class="ruby-identifier">flow_to</span>=<span class="ruby-constant">PFD_DataFlow</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">current_process</span>,<span class="ruby-identifier">store_to</span>,<span class="ruby-value str">'tar'</span>)
+              <span class="ruby-identifier">regist_datastore</span> <span class="ruby-identifier">store_from</span>
+              <span class="ruby-identifier">regist_datastore</span> <span class="ruby-identifier">store_to</span>
+              <span class="ruby-identifier">regist_dataflow</span> <span class="ruby-identifier">flow_from</span>
+              <span class="ruby-identifier">regist_dataflow</span> <span class="ruby-identifier">flow_to</span>
+            <span class="ruby-keyword kw">else</span>
+              <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">warn</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;tar task like [ #{step.node} ] not implemented.&quot;</span>}
+            <span class="ruby-keyword kw">end</span>
+
+
+          <span class="ruby-keyword kw">else</span>
+            <span class="ruby-identifier">p</span> <span class="ruby-identifier">step</span>.<span class="ruby-identifier">node_name</span>
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">else</span>
+          <span class="ruby-identifier">raise</span> <span class="ruby-constant">AntHiveError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">&quot;[ Bug ] Unknown tag type.&quot;</span>)
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

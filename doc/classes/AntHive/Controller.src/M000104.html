@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>run (AntHive::Controller)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File controller.rb, line 68</span>
+                <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">run</span>
+                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">info</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-value str">&quot;========================================&quot;</span>}
+                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">info</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-value str">&quot;Ant-hive is running with these settings.&quot;</span>}
+                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">info</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;   root_directory    : [ #{@root_directory} ]&quot;</span>}
+                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">info</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;   request for map   : [ #{@maplist.join(',')} ]&quot;</span>}
+                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">info</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;   request for route : [ #{disp_string(@routelist)} ]&quot;</span>} <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@routelist</span>.<span class="ruby-identifier">empty?</span>
+
+                        <span class="ruby-comment cmt"># 解析対象ファイル一覧の作成</span>
+                        <span class="ruby-identifier">filelist</span>=<span class="ruby-ivar">@maplist</span> <span class="ruby-operator">+</span> <span class="ruby-ivar">@routelist</span>.<span class="ruby-identifier">collect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> <span class="ruby-identifier">x</span>.<span class="ruby-identifier">first</span> }
+                        <span class="ruby-identifier">filelist</span>=<span class="ruby-identifier">filelist</span>.<span class="ruby-identifier">sort</span>.<span class="ruby-identifier">uniq</span>
+                        <span class="ruby-identifier">raise</span> <span class="ruby-constant">AntHiveError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">&quot;None to parse. Specify any file.&quot;</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">filelist</span>.<span class="ruby-identifier">empty?</span>
+                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Parse targets are [ #{filelist.join(',')} ] at this time.&quot;</span>}
+
+                        <span class="ruby-comment cmt"># 解析対象ファイルの解析</span>
+                        <span class="ruby-identifier">filelist</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span> <span class="ruby-identifier">parse</span>(<span class="ruby-identifier">file</span>) }
+
+                        <span class="ruby-ivar">@routelist</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">route</span><span class="ruby-operator">|</span> 
+                                <span class="ruby-identifier">file_path</span>,<span class="ruby-identifier">target</span>,<span class="ruby-identifier">options</span>,<span class="ruby-identifier">with_pfd</span>=<span class="ruby-operator">*</span><span class="ruby-identifier">route</span>
+                                <span class="ruby-identifier">options</span>={} <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">options</span>
+
+                                <span class="ruby-comment cmt"># routelistの評価開始</span>
+                                <span class="ruby-identifier">target</span>=<span class="ruby-identifier">evaluate</span>(<span class="ruby-identifier">file_path</span>,<span class="ruby-identifier">target</span>,<span class="ruby-identifier">options</span>)
+                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-value str">&quot;Generating each requested route.&quot;</span>}
+
+                                <span class="ruby-comment cmt"># route(ROUTE記述)の生成</span>
+                                <span class="ruby-identifier">generate_route</span>([<span class="ruby-identifier">file_path</span>,<span class="ruby-identifier">target</span>,<span class="ruby-identifier">options</span>])
+                                
+                                <span class="ruby-comment cmt"># route(PFD)の生成</span>
+                                <span class="ruby-identifier">generate_pfd</span>([<span class="ruby-identifier">file_path</span>,<span class="ruby-identifier">target</span>,<span class="ruby-identifier">options</span>]) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">with_pfd</span>
+                        <span class="ruby-keyword kw">end</span>
+                        
+                        <span class="ruby-comment cmt"># 静的mapの作成</span>
+                        <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@maplist</span>.<span class="ruby-identifier">empty?</span>
+                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-value str">&quot;Generating each requested map.&quot;</span>}
+                                <span class="ruby-ivar">@maplist</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">map</span><span class="ruby-operator">|</span> <span class="ruby-identifier">generate_map_graph</span>(<span class="ruby-identifier">map</span>) } 
+
+                                <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-ivar">@cache_file</span>,<span class="ruby-value str">'w'</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-ivar">@ui_answer</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span>,<span class="ruby-identifier">v</span><span class="ruby-operator">|</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;#{k}@@-&gt;@@#{v}&quot;</span> } }
+
+                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-value str">&quot;Drawing graphs using graphviz.&quot;</span>}
+                                <span class="ruby-identifier">outfile_path</span>=<span class="ruby-ivar">@map_generator</span>.<span class="ruby-identifier">graph</span>(<span class="ruby-ivar">@fake</span>)
+                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">info</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;[ #{outfile_path} ] was successfully generated as MAP.&quot;</span>}
+                        <span class="ruby-keyword kw">end</span>
+
+                <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

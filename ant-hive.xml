@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="Shift_JIS" ?>
+<anthive>
+	<!-- 
+ant-hive configuration file
+
+このXMLファイルにはant-hiveを動作させる際のオプションを、
+hive要素に記述することが出来ます。
+hive要素は複数保管することが可能ですので、用途に応じて使い分けてください。
+
+conf要素の子要素として以下の要素が使用可能です。
+	(必須) root_directory要素
+				Antスクリプト、各種プロパティファイル等を実行時環境と同様のディレクトリ・ツリー構成
+				で格納した最上位のディレクトリをpath属性を用いて指定します。
+				プロパティ等で参照しているパスが、ここで指定したroot_directoryを超えて外に飛び出す場合には、例外が生じます。
+
+	(任意) map要素
+				Antスクリプトの静的構造図(mapと呼びます)を出力する対象のファイル名を、root_directory要素で
+				指定したパスからの相対パスで指定します。(file属性)
+				mapでは各target内のproperty値の判断などは行いません。通りうる全パスを出力します。
+
+	(任意) route要素
+				特定のTargetからの動的経路(routeと呼びます)を出力する際の、基点となるファイル名、ターゲット名、オプション
+				を指定します。
+				各々の指定には以下の属性を使用します。
+				ファイル名  ：file   属性(root_directoryからの相対パス)
+				ターゲット名：target 属性
+				経路情報のDiagram出力も有効にする場合には、with_diagram属性を"true"に設定してください。
+
+				子要素としてoptions要素を複数持つ事が可能です。
+				options要素は、key と val 属性を持ちます。
+	
+	-->
+
+	<hive name="hpcms_build">
+		<root_directory path="hpcms" />
+
+		<!-- build.xml のMAPを出力 -->
+		<map file="build.xml" />
+
+		<!-- build.xml のreleaseターゲットから開始するROUTEを出力
+         options 付き
+         (ant -Dexerb.core="E:/....../ruby185c.exc" release と同値)
+		<route file="build.xml" target="release" with_diagram="true" >
+			<options key="exerb.core" val="E:/softwares/ruby/share/exerb/ruby185c.exc" />
+		</route>
+		-->
+
+		<!-- build.xml のgenerate_exeターゲットから開始するROUTEを出力
+		<route file="build.xml" target="generate_exe" />
+     -->
+	</hive>
+
+
+	<hive name="sample">
+		<root_directory path="sample" />
+
+		<!-- build.xml のMAPを出力 -->
+		<map file="build.xml" />
+
+		<!-- build.xml のreleaseターゲットから開始するROUTEを出力
+         options 付き
+         (ant -Dexerb.core="E:/....../ruby185c.exc" release と同値)
+		-->
+		<route file="build.xml" target="release" with_diagram="true" >
+			<options key="exerb.core" val="E:/softwares/ruby/share/exerb/ruby185c.exc" />
+		</route>
+
+		<!-- build.xml のgenerate_exeターゲットから開始するROUTEを出力 -->
+		<route file="build.xml" target="generate_exe" />
+	</hive>
+</anthive>

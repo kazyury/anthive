@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>evaluate_property (AntHive::Evaluater)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File evaluater.rb, line 630</span>
+                <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">evaluate_property</span>(<span class="ruby-identifier">element</span>,<span class="ruby-identifier">replacement</span>={},<span class="ruby-identifier">mutable</span>=<span class="ruby-keyword kw">false</span>,<span class="ruby-identifier">alternate_table</span>=<span class="ruby-keyword kw">false</span> )
+                        <span class="ruby-identifier">alternate_table</span> <span class="ruby-value">? </span><span class="ruby-identifier">table</span>=<span class="ruby-identifier">alternate_table</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">table</span>=<span class="ruby-ivar">@table</span>
+                        <span class="ruby-identifier">mutable</span> <span class="ruby-value">? </span> <span class="ruby-identifier">word</span>=<span class="ruby-value str">&quot;property&quot;</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">word</span>=<span class="ruby-value str">&quot;variable&quot;</span>
+                        
+                        <span class="ruby-comment cmt"># &lt;property file=&quot;...&quot; &gt;</span>
+                        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">property_file</span>=<span class="ruby-identifier">element</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'file'</span>]
+                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;#{word} node has file=[ #{property_file} ] attribute. Expand it.&quot;</span>}
+                                <span class="ruby-identifier">property_file</span>=<span class="ruby-identifier">replace_with</span>(<span class="ruby-identifier">replacement</span>,<span class="ruby-identifier">property_file</span>)
+                                <span class="ruby-identifier">property_file</span>=<span class="ruby-identifier">table</span>.<span class="ruby-identifier">expand</span>(<span class="ruby-identifier">property_file</span>)
+                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Expanded value is [ #{property_file} ] .&quot;</span>}
+
+                                <span class="ruby-identifier">property_file_runtime</span>=<span class="ruby-identifier">runtime_path</span>(<span class="ruby-identifier">property_file</span>)
+                                <span class="ruby-keyword kw">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">property_file_runtime</span>)
+                                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;File:[ #{property_file_runtime} ] exists. Load #{word}.&quot;</span>}
+                                        <span class="ruby-constant">PropertyFile</span>.<span class="ruby-identifier">properties</span>(<span class="ruby-identifier">property_file_runtime</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">k</span>,<span class="ruby-identifier">v</span><span class="ruby-operator">|</span> <span class="ruby-identifier">table</span>.<span class="ruby-identifier">regist</span>(<span class="ruby-identifier">k</span>,<span class="ruby-identifier">v</span>,<span class="ruby-identifier">mutable</span>) }
+                                <span class="ruby-keyword kw">end</span>
+
+                        <span class="ruby-comment cmt"># &lt;property name=&quot;...&quot; value=&quot;...&quot; /&gt;</span>
+                        <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">element</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'name'</span>] 
+                                <span class="ruby-identifier">property_name</span>=<span class="ruby-identifier">element</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'name'</span>]
+
+                                <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">element</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'value'</span>]
+                                        <span class="ruby-identifier">property_value</span>=<span class="ruby-identifier">element</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'value'</span>]
+
+                                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;#{word} node has name=[ #{property_name} ] and value=[ #{property_value} ] attribute. Expand it.&quot;</span>}
+                                        <span class="ruby-identifier">table</span>.<span class="ruby-identifier">regist</span>(<span class="ruby-identifier">property_name</span>, <span class="ruby-identifier">property_value</span>,<span class="ruby-identifier">mutable</span>)
+                                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Registed name=[ #{property_name} ] and value=[ #{property_value} ] #{word} set.&quot;</span>}
+
+                                        <span class="ruby-identifier">property_name</span>=<span class="ruby-identifier">replace_with</span>(<span class="ruby-identifier">replacement</span>,<span class="ruby-identifier">property_name</span>)
+                                        <span class="ruby-identifier">property_value</span>=<span class="ruby-identifier">replace_with</span>(<span class="ruby-identifier">replacement</span>,<span class="ruby-identifier">property_value</span>)
+                                        <span class="ruby-identifier">property_name</span>=<span class="ruby-identifier">table</span>.<span class="ruby-identifier">expand</span>(<span class="ruby-identifier">property_name</span>)
+                                        <span class="ruby-identifier">property_value</span>=<span class="ruby-identifier">table</span>.<span class="ruby-identifier">expand</span>(<span class="ruby-identifier">property_value</span>)
+                                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Expanded value is [ #{property_name} ] and [ #{property_value} ] .&quot;</span>}
+                                <span class="ruby-keyword kw">else</span>
+                                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">error</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;IMPLEMENTED #{word.upcase} FOR 'name' ATTRIBUTE IS 'value=' ONLY.&quot;</span>}
+                                <span class="ruby-keyword kw">end</span>
+
+                        <span class="ruby-comment cmt"># &lt;property environment=&quot;env&quot; /&gt;</span>
+                        <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">element</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'environment'</span>]
+                                <span class="ruby-comment cmt"># 実行環境ではないのでとりあえずどうしようもないか。</span>
+
+                        <span class="ruby-comment cmt"># other property tasks</span>
+                        <span class="ruby-keyword kw">else</span>
+                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">error</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;NOT IMPLEMENTED #{word.upcase} ATTRIBUTE.&quot;</span>}
+                        <span class="ruby-keyword kw">end</span>
+                <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

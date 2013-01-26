@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>value_for (AntHive::PropertyTable)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File property_table.rb, line 69</span>
+                <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">value_for</span>(<span class="ruby-identifier">key</span>,<span class="ruby-identifier">expansion</span>=<span class="ruby-keyword kw">true</span>)
+                        <span class="ruby-identifier">raise</span> <span class="ruby-constant">AntHiveError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-node">&quot;Key:[ #{key} ] is not registed.&quot;</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">registed?</span>(<span class="ruby-identifier">key</span>)
+                        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">expansion</span>
+                                <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">expand</span>(<span class="ruby-ivar">@table</span>[<span class="ruby-identifier">key</span>])
+                        <span class="ruby-keyword kw">else</span>
+                                <span class="ruby-ivar">@table</span>[<span class="ruby-identifier">key</span>]
+                        <span class="ruby-keyword kw">end</span>
+                <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

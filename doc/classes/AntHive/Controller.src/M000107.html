@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>generate_map_graph (AntHive::Controller)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File controller.rb, line 170</span>
+                <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">generate_map_graph</span>(<span class="ruby-identifier">file_path</span>)
+                        <span class="ruby-ivar">@map_generator</span>.<span class="ruby-identifier">root_directory</span> = <span class="ruby-ivar">@root_directory</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@map_generator</span>.<span class="ruby-identifier">root_directory</span> 
+                        <span class="ruby-identifier">parse_if_not</span>(<span class="ruby-identifier">file_path</span>)
+                        <span class="ruby-identifier">real_path</span>=<span class="ruby-constant">RealPath</span>.<span class="ruby-identifier">realpath</span>(<span class="ruby-ivar">@root_directory</span>,<span class="ruby-identifier">file_path</span>)
+
+                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Generating static map for [ #{real_path} ].&quot;</span>}
+                        <span class="ruby-ivar">@map_generator</span>.<span class="ruby-identifier">generate</span>(<span class="ruby-identifier">real_path</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">unsolved</span><span class="ruby-operator">|</span>
+                                <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@fake</span>
+                                        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">solved_real_path</span>=<span class="ruby-ivar">@ui_answer</span>[<span class="ruby-identifier">unsolved</span>]
+                                                <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">info</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Unsolved path:[ #{unsolved} ] was solved as [ #{solved_real_path} ] by user decision.&quot;</span>}
+                                                <span class="ruby-identifier">solved_real_path</span>
+                                        <span class="ruby-keyword kw">else</span>
+                                                <span class="ruby-identifier">keep_decision</span>=<span class="ruby-keyword kw">false</span>
+
+                                                <span class="ruby-identifier">statement</span> = <span class="ruby-node">&quot;Through generating map:[ #{real_path} ],Unsolved name:[ #{unsolved} ] was appeared.\n&quot;</span>
+                                                <span class="ruby-identifier">statement</span><span class="ruby-operator">+=</span> <span class="ruby-node">&quot;Enter path name for [ #{unsolved} ] to generate map, with relative-path from [ #{@root_directory} ].\n&quot;</span>
+                                                <span class="ruby-identifier">statement</span><span class="ruby-operator">+=</span> <span class="ruby-node">&quot;If first string of answer is `[keep]`, remember your selection for [ #{unsolved} ].\n&quot;</span>
+                                                <span class="ruby-identifier">statement</span><span class="ruby-operator">+=</span> <span class="ruby-value str">&quot;If first string of answer is `[file]`, recall your selection from cache file.&quot;</span>
+                                                <span class="ruby-identifier">solved_path</span> = <span class="ruby-ivar">@ui</span>.<span class="ruby-identifier">ask</span>(<span class="ruby-identifier">statement</span>)
+
+                                                <span class="ruby-comment cmt"># 未解決のファイル名に対してUIから入力されたファイル名を検証する。</span>
+                                                <span class="ruby-comment cmt"># 入力されない場合には無視。</span>
+                                                <span class="ruby-comment cmt"># 入力された場合で、そのファイルが実際に存在している場合には追加のgenerate処理を行う。</span>
+                                                <span class="ruby-comment cmt"># 冒頭が[keep]となっている場合には、その情報を@ui_answerにも格納する。</span>
+                                                <span class="ruby-comment cmt"># 冒頭が[file]となっている場合には、cacheから情報を読み込みその内容を使用する。</span>
+
+                                                <span class="ruby-keyword kw">if</span> <span class="ruby-regexp re">/\A\[file\]/i</span><span class="ruby-operator">=~</span><span class="ruby-identifier">solved_path</span>
+                                                        <span class="ruby-keyword kw">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-ivar">@cache_file</span>)
+                                                                <span class="ruby-constant">File</span>.<span class="ruby-identifier">foreach</span>(<span class="ruby-ivar">@cache_file</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>
+                                                                        <span class="ruby-identifier">line</span>.<span class="ruby-identifier">chomp!</span>
+                                                                        <span class="ruby-identifier">key</span>,<span class="ruby-identifier">val</span>=<span class="ruby-identifier">line</span>.<span class="ruby-identifier">split</span>(<span class="ruby-value str">'@@-&gt;@@'</span>)
+                                                                        <span class="ruby-ivar">@ui_answer</span>[<span class="ruby-identifier">key</span>]=<span class="ruby-identifier">val</span>
+                                                                }
+                                                        <span class="ruby-keyword kw">else</span>
+                                                                <span class="ruby-ivar">@ui</span>.<span class="ruby-identifier">tell</span>(<span class="ruby-value str">&quot;cache file is not created.&quot;</span>)
+                                                        <span class="ruby-keyword kw">end</span>
+                                                        <span class="ruby-keyword kw">retry</span>
+                                                <span class="ruby-keyword kw">end</span>
+
+                                                <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">solved_path</span> <span class="ruby-operator">!=</span> <span class="ruby-value str">&quot;&quot;</span>
+                                                        <span class="ruby-keyword kw">if</span> <span class="ruby-regexp re">/\A\[keep\]\s/i</span><span class="ruby-operator">=~</span><span class="ruby-identifier">solved_path</span>
+                                                                <span class="ruby-identifier">solved_path</span>.<span class="ruby-identifier">sub!</span>(<span class="ruby-regexp re">/\A\[keep\]\s/i</span>,<span class="ruby-value str">''</span>)
+                                                                <span class="ruby-identifier">keep_decision</span>=<span class="ruby-keyword kw">true</span>
+                                                        <span class="ruby-keyword kw">end</span>
+                                                        <span class="ruby-keyword kw">begin</span>
+                                                                <span class="ruby-identifier">recursive</span>=<span class="ruby-keyword kw">true</span>
+                                                                <span class="ruby-identifier">solved_real_path</span> = <span class="ruby-constant">RealPath</span>.<span class="ruby-identifier">realpath</span>(<span class="ruby-ivar">@root_directory</span>,<span class="ruby-identifier">solved_path</span>)
+                                                                <span class="ruby-ivar">@ui_answer</span>[<span class="ruby-identifier">unsolved</span>]=<span class="ruby-identifier">solved_real_path</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">keep_decision</span>
+                                                        <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">AntHiveError</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
+                                                                <span class="ruby-ivar">@ui</span>.<span class="ruby-identifier">tell</span>(<span class="ruby-node">&quot;Entered path[ #{solved_path} ] was not found. Ignored.&quot;</span>)
+                                                                <span class="ruby-identifier">recursive</span>=<span class="ruby-keyword kw">false</span>
+                                                        <span class="ruby-keyword kw">end</span>
+                                                        <span class="ruby-identifier">generate_map_graph</span>(<span class="ruby-identifier">solved_path</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">recursive</span> 
+                                                <span class="ruby-keyword kw">else</span>
+                                                        <span class="ruby-ivar">@ui</span>.<span class="ruby-identifier">tell</span>(<span class="ruby-value str">&quot;None was entered. Ignored.&quot;</span>)
+                                                <span class="ruby-keyword kw">end</span>
+
+                                                <span class="ruby-identifier">solved_real_path</span>
+                                        <span class="ruby-keyword kw">end</span>
+                                <span class="ruby-keyword kw">end</span>
+                        <span class="ruby-keyword kw">end</span>
+
+                        <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">info</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>){<span class="ruby-node">&quot;Static map for [ #{real_path} ] was generated.&quot;</span>}
+                <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

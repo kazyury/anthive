@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>File: ant-hive.rb</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+  <div id="fileHeader">
+    <h1>ant-hive.rb</h1>
+    <table class="header-table">
+    <tr class="top-aligned-row">
+      <td><strong>Path:</strong></td>
+      <td>ant-hive.rb
+      </td>
+    </tr>
+    <tr class="top-aligned-row">
+      <td><strong>Last Update:</strong></td>
+      <td>Sat Feb 02 20:31:50 東京 (標準時) 2008</td>
+    </tr>
+    </table>
+  </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <h1><a href="../classes/AntHive.html">AntHive</a></h1>
+<h2>Introduction</h2>
+<p>
+ant-hiveは、やたらと細かく分割されたtargetを追いかけるのに疲れた人や、やたらと${&#8230;}の多いプロパティファイルの展開に疲れてしまった人のための、
+Antスクリプトの簡易解析器となる事を目的としたツールです。
+</p>
+<p>
+Antスクリプトの解析は、大きく以下の2通りの方法に分類されます。
+</p>
+<ol>
+<li>Antスクリプト全体を概観するための静的解析
+
+</li>
+<li>特定ターゲットを基点としたプロパティ評価等を伴いながらの動的経路追跡
+
+</li>
+</ol>
+<p>
+それぞれをant-hiveでは、&#8217;map&#8217;, &#8216;route&#8217;
+と呼称します。 実行するために必要なソフトウェア等については、 Install
+の項を参照してください。
+</p>
+<h2>Install</h2>
+<p>
+ant-hive自体は、特にレジストリや環境変数やらを必要としていませんので、適宜のディレクトリに配置してもらえれば、
+インストールは完了です。(日本語ディレクトリ名や、空白を含むようなディレクトリ名は未確認ですが)
+ただし、ant-hiveには、その使用用途に応じて追加導入が必要なソフトウェアがあります。
+</p>
+<h3>map出力を行う場合に必要な追加ソフトウェア</h3>
+<ul>
+<li>graphviz (公式サイト： <a
+href="http://www.graphviz.org">www.graphviz.org</a>/
+を参照してください。すばらしいツールを有難う。)
+
+</li>
+</ul>
+<h3>route出力を行う場合に必要な追加ソフトウェア</h3>
+<ul>
+<li>Microsoft Excel (公式サイト： <a
+href="http://www.microsoft.com">www.microsoft.com</a> を参照してください。)
+
+</li>
+</ul>
+<p>
+個人的にはExcelを使用することには抵抗を感じているのですが、殆どのPCに導入されていることからユーザの利便性を採用したつもりです。
+もし、ExcelをインストールしていないPCでこのツールを使いたいと考える奇特な方がいらっしゃるのであれば、Excelを購入する前にAuthor
+までメールすると何か良いことがあるかも知れません。
+もしかしたら代替実装ができるかも。(暇ならね。)
+テキストファイルにインデントして出力するぐらいならすぐに対応できると思うんだけど、そんなん嬉しくないよね？
+</p>
+<h2>Tutorial</h2>
+<ul>
+<li>基本的な使用方法について
+
+<ul>
+<li><a
+href="../classes/AntHiveDocument/FirstStep.html">AntHiveDocument::FirstStep</a>
+を参照し、同梱されているsampleディレクトリの中身を探索してみましょう。sampleの蟻の巣の暴き方が記載されています。
+
+</li>
+<li><a
+href="../classes/AntHiveDocument/Options.html">AntHiveDocument::Options</a>
+を参照して指定(する|出来る)オプションを確認してください。目を通すべきことは、どうせ大した量ではありません。
+
+</li>
+</ul>
+</li>
+<li>ご自身のant達を解析する。
+
+<ul>
+<li><a
+href="../classes/AntHiveDocument/AddNewHives.html">AntHiveDocument::AddNewHives</a>
+を参照して、アナタが暴くべき巣をターゲットにしましょう。
+
+</li>
+<li>構成ファイルant-hive.xmlを使用すると、好みの解析情報を何度でも選択的に実行することが可能です。
+<a
+href="../classes/AntHiveDocument/AntHiveConfigFile.html">AntHiveDocument::AntHiveConfigFile</a>
+を参照して構成ファイルの基本をおさえてください。
+
+</li>
+</ul>
+</li>
+<li>このツールをhackする。
+
+<ul>
+<li><a href="../classes/AntHive/Controller.html">AntHive::Controller</a>
+を取っ掛かりとしてみてください。
+
+</li>
+</ul>
+</li>
+</ul>
+<h2>Requirements</h2>
+<ul>
+<li>Windows実行バイナリ形式(ant-hive.exe)を使用する場合
+
+<ul>
+<li>特にありません。
+
+</li>
+</ul>
+</li>
+<li>ソースコード(ant-hive.rb)を使用する場合
+
+<ul>
+<li>実行マシン上にて、rubyがインストールされていて使用可能である必要があります。(ruby
+1.8.4 (2005-12-24) [i386-mswin32]にて動作確認。恐らく1.9系では不可。)
+
+</li>
+<li>rubyに標準添付されているライブラリが使用可能である必要があります。(ruby
+1.8.4以上ならば添付されている筈です。詳しくは、ant-hive.exy
+ファイルを参照してください。)
+
+</li>
+</ul>
+</li>
+<li>上記何れの場合であっても生成された&#8217;map&#8217;を参照するにはSVGビューワーが必要です。
+作者はInkscapeを愛用しています。
+
+</li>
+</ul>
+<h2>Licences</h2>
+<p>
+ライセンスはRuby&#8217;sとします。 Rubyについては、 <a
+href="http://www.ruby-lang.org">www.ruby-lang.org</a>
+より入手することが出来ます。
+</p>
+<h2>前提事項</h2>
+<ul>
+<li>このツールは無保証です。当ツールの利用による損害等には作者は対応できませんので、自己責任でご利用ください。ご利用は計画的に。
+
+</li>
+</ul>
+<h2>Author</h2>
+<p>
+Kazunori Sasaki(kazyury AT gmail.com) AT
+をアットマークに書き換えてください。
+</p>
+<h2>ChangeLog</h2>
+<h3>version 0.5.4(alpha): 中間バージョン</h3>
+<ul>
+<li>2008/03/02 route情報からProcessFlowDiagram(PFD)を作る機能を実装する。
+
+</li>
+<li>2008/02/13 -R オプションの処理が腐っていたので修正。thx sawa
+
+</li>
+<li>2008/02/13 build.xmlでソースパッケージを生成するtargetを追加。
+
+</li>
+<li>2008/02/13
+antcall/ant/subantの子要素についてもEvaluatedStepを積むように変更。
+
+</li>
+<li>2008/02/13
+Route出力時のExcelファイル保存時に使用できない文字が含まれる場合には、&#8217;_&#8217;で置換してファイル名とするよう変更。
+
+</li>
+<li>2008/02/13
+ant要素などの子要素で指定されたparam,propertyは次のEvaluater(だけ)に渡すように変更。
+
+</li>
+<li>2008/02/13 Evaluaterでantcall/ant/subant
+の実装をリファクタリング。共通部分の括りだしを実施。(UnitTestが無いので一寸つらい。バグってるかも。)
+
+</li>
+<li>2008/02/10 hiveにrouteを格納するときに、オプションが無視されている件の対応
+
+</li>
+<li>2008/02/10
+トップレベルの要素(property等)についてもEvaluatedStepを積むよう変更
+
+</li>
+</ul>
+<h3>version 0.5.3(alpha): 中間バージョン</h3>
+<ul>
+<li>2008/02/08
+routeでtargetを指定しない場合に、Hive#entry_pointがnilになるためにExcel出力時に例外が発生する。
+
+</li>
+<li>2008/02/02
+LoggerをSingletonなLoggerに変更。伴って関連ライブラリ追加。これで各クラスでのLogger出力がやりやすくなる。
+
+</li>
+<li>2008/02/02
+varタスク(Ant-Contrib)を実装。(ただし手抜き。バグが取りきれていないようにも見える&#8230;)
+
+</li>
+<li>2008/02/01 ant-hive.xmlの構文を変更(route要素の子要素としてoptionを定義)
+
+</li>
+<li>2008/02/01
+文字化け対応でkconvをrequireするよう変更。併せてRoute出力時には文字化けしないようになった筈。
+
+</li>
+<li>2008/01/31 PropertyTable#expand
+で無限展開抑制のための再スキャン実施FLのバグで、Tableに未登録のプロパティ名が存在していた時には、残りの展開可能なプロパティ名を諦めてしまっていたのを修正
+
+</li>
+<li>2008/01/30 PropertyTableのUnitTestを追加
+
+</li>
+<li>2008/01/30 PropertyTable#expandがネストしたプロパティ展開に対応(
+${&#8230;${&#8212;}..} に対応)
+
+</li>
+<li>2008/01/30
+PropertyTable#expandをリファクタリング(PropertyTable#expandables,
+PropertyTable#expandable? を追加。)
+
+</li>
+<li>2008/01/30
+immutables導入に伴い、PropertyTable#deep_copyでもimmutablesを取り扱うように
+
+</li>
+<li>2008/01/30 PropertyTable#registで第3引数:mutable=false
+を追加。これでvarタスクが組めるように。
+
+</li>
+<li>2008/01/30 forタスクでlistの展開が行われていなかった件の対応
+
+</li>
+</ul>
+<h3>version 0.5.2(alpha): 中間バージョン</h3>
+<ul>
+<li>2008/01/29 for タスク(Ant-Contrib)の実装
+
+</li>
+<li>2008/01/29
+cacheファイルのネーミングルールを仮想ルートディレクトリ毎に一意になるよう、&quot;.#{@root_directory.gsub(&#8217;/&#8217;,&#8217;.&#8217;)}.cache&quot;
+に変更
+
+</li>
+<li>2008/01/29
+ant-hiveのbuild.xmlでRDoc作成の前にdocディレクトリを削除するよう変更
+
+</li>
+<li>2008/01/28 available タスクの実装
+
+</li>
+<li>2008/01/28 propertycopy タスク(Ant-Contrib)の実装
+
+</li>
+<li>2008/01/28 Rdocでtestをexcludeパターンに追加
+
+</li>
+<li>2008/01/28 ParserのUnitTestを作成。build.xmlへの組み込み実施。
+
+</li>
+<li>2008/01/28
+ユーザドキュメントを作成。あとは、cui.rbとかでcallbackしているMAPの名前解決部分と、生成ファイル名のルールを何処かに記載すればユーザドキュメントは完了。
+
+</li>
+<li>2008/01/24
+EvaluatedStepに${}を展開させた後の値(evaluated_value)を持たせて、値が展開前と展開後が異なる場合には、Route記述に出力するよう改善
+
+</li>
+<li>2008/01/24 map生成時に、ant,antcall,subant,depends毎に線種を変える。
+
+</li>
+<li>2008/01/24
+読み込むべきプロパティファイルが絶対パスで指定されているときに、@root_directory以下を対象とするよう修正(/var/ant
+-&gt; sample/var/ant)
+
+</li>
+<li>2008/01/24 PropertyParserを廃止し、新たなモジュール<a
+href="../classes/PropertyFile.html">PropertyFile</a>を使用するように変更
+
+</li>
+<li>2008/01/24
+build.xmlでexerbコアのパスをexerb.coreプロパティに外だし。実行時に指定可能に。
+
+</li>
+<li>2008/01/24 route生成時のログメッセージが不適切だったのを修正
+
+</li>
+<li>2008/01/24
+Evaluaterが存在しないpropertyファイルを参照しようとした際に、出力するログを限定した。
+
+</li>
+<li>2008/01/24
+loggerの出力レベルを調整。取り合えずINFOレベルでは必要最小限の情報に絞ることにした。
+
+</li>
+</ul>
+<h3>version 0.5.0(alpha): initial version.</h3>
+<h2>Todo</h2>
+<ul>
+<li>(Middle)mapを出力する際に、統合して出力(現状)と個別に出力することを選択できるようにする。
+
+</li>
+</ul>
+<p>
+ここまで来たらBeta扱いに
+</p>
+<ul>
+<li>(Low)ExcelConstとExcelColumnNameをmiscに移動
+
+</li>
+<li>(Low)RDocコメント記入
+
+</li>
+<li>(Low)EvaluatedStep#node
+がAntObject::Targetになってしまっているが、影響範囲を確認
+
+</li>
+<li>(Low)evaluate_XXXXXシリーズは、REXML::Documentインタフェースではない方が良さそう&#8230;。今のままではネストした子要素を上手く表現できていない。(解釈はしているが)
+
+</li>
+<li>(Low)サボっているUnitTestを実装
+
+</li>
+<li>(Low)graphvizのオプション調整
+
+</li>
+<li>(Low)UnitTestしやすいようにリファクタリング(主に責任分割によるメソッド切り出し)
+
+</li>
+<li>(Low)ant,subant,antcall
+時の次のファイル等の解決を、ParserとEvaluaterで共用可能なように。
+
+</li>
+<li>(Low)GUIを実装
+
+</li>
+</ul>
+<h2>VERSION</h2>
+<p>
+version=0.5.4(alpha)
+</p>
+
+    </div>
+
+    <div id="requires-list">
+      <h3 class="section-bar">Required files</h3>
+
+      <div class="name-list">
+      req.rb&nbsp;&nbsp;
+      </div>
+    </div>
+
+   </div>
+
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

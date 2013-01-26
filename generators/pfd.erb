@@ -1,0 +1,13 @@
+digraph G {
+	graph [ rankdir=TB ];
+	node  [ shape=rect ];
+	edge  [ arrowhead=vee ];
+	""    [ style = invis ];
+
+<% @pfd_processes.collect{|x| x.path }.uniq.each do |path| %>
+<%= write_cluster(path) %>
+<% end %>
+<%= @pfd_datastores.collect{|x| x.to_s}.join("\n") %>
+<%= @pfd_dataflows.collect{|x| x.to_s}.join("\n") %>
+}
+

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: AntHiveDocument::Options</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">AntHiveDocument::Options</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../files/document_rb.html">
+                document.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+                Object
+            </td>
+        </tr>
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <h2><a href="Options.html">Options</a>.</h2>
+<p>
+ant-hiveは基本的にはコンソールアプリです。 実行時オプションとして、-g 又は
+&#8212;guiを設定するとGUIモードで立ち上がる予定ですが、
+現Versionでは未実装です。
+</p>
+<p>
+ant-hiveには複数のオプションがありますが、基本的なパターンは限られています。
+</p>
+<ul>
+<li>ant-hive -g
+
+<ul>
+<li>GUIモードで起動します(未実装)。
+
+</li>
+</ul>
+</li>
+<li>ant-hive -H 定義済みhive名
+
+<ul>
+<li>同ディレクトリのant-hive.xml内で定義された定義済みhive名を用いて蟻の巣を暴きます。
+最も一般的な使用方法です。 sample/build.xmlを暴くためには、ant-hive -H
+sample としてみてください。
+
+</li>
+</ul>
+</li>
+<li>ant-hive -r ant_root -M mapリスト -R routeリスト
+
+<ul>
+<li>一回こっきりの作業ならばこれもまた良いでしょう。
+sample/build.xmlの全体mapと、releaseターゲットから始まる一連のrouteを暴くには、ant-hive
+-r sample -M build.xml -R release@build.xml としてみてください。
+
+</li>
+</ul>
+</li>
+</ul>
+<p>
+コマンドを実行すると、以下の様にコンソール上にログが出力されます。
+デフォルトでは、Info, Warn, Error相当のログが出力されます。
+</p>
+<pre>
+ E:\Home\kz\anthive&gt;ant-hive -H sample
+ I, [2008-01-26T21:13:15.031000 #1820]  INFO -- AntHive::CUI: ant-hive is starting. Log level is [ 1 ].
+ I, [2008-01-26T21:13:16.187000 #1820]  INFO -- AntHive::Controller: ========================================
+ I, [2008-01-26T21:13:16.187000 #1820]  INFO -- AntHive::Controller: Ant-hive is running with these settings.
+ I, [2008-01-26T21:13:16.187000 #1820]  INFO -- AntHive::Controller:     root_directory    : [ sample ]
+ I, [2008-01-26T21:13:16.187000 #1820]  INFO -- AntHive::Controller:     request for map   : [ build.xml ]
+ I, [2008-01-26T21:13:16.187000 #1820]  INFO -- AntHive::Controller:     request for route : [[build.xml,release,],[build.xml,generate_exe,]]
+ I, [2008-01-26T21:13:16.203000 #1820]  INFO -- AntHive::Controller: Starting static-parse for [ sample/build.xml ].
+ I, [2008-01-26T21:13:16.218000 #1820]  INFO -- AntHive::Controller: Starting dynamic-evaluation for File:[ sample/build.xml ], Target:[ release ], Options:[  ].
+ I, [2008-01-26T21:13:16.234000 #1820]  INFO -- AntHive::Controller: Starting dynamic-evaluation for File:[ sample/build.xml ], Target:[ generate_exe ], Options:[  ].
+ I, [2008-01-26T21:13:16.250000 #1820]  INFO -- AntHive::Controller: Static map for [ sample/build.xml ] was generated.
+ I, [2008-01-26T21:13:16.484000 #1820]  INFO -- AntHive::Controller: [ sample.svg ] was successfully generated as MAP.
+ W, [2008-01-26T21:13:16.500000 #1820]  WARN -- AntHive::RouteTraceGenerator: writing to Microsoft Excel. -- DO NOT USE Excel -- until ends.
+ I, [2008-01-26T21:13:17.625000 #1820]  INFO -- AntHive::Controller: [ sample/release_at_build.xls ] was successfully generated for [ release ]@[ build.xml ] with [  ], ROUTE.
+ W, [2008-01-26T21:13:17.625000 #1820]  WARN -- AntHive::RouteTraceGenerator: writing to Microsoft Excel. -- DO NOT USE Excel -- until ends.
+ I, [2008-01-26T21:13:18.218000 #1820]  INFO -- AntHive::Controller: [ sample/generate_exe_at_build.xls ] was successfully generated for [ generate_exe ]@[ build.xml ] with [  ], ROUTE.
+</pre>
+<p>
+-d, -q オプションはログ出力のレベルを変更します。
+</p>
+<ul>
+<li>-d, &#8212;debug デバッグモードです。呆れるほど大量のログを吐いてくれます。
+
+</li>
+<li>-q, &#8212;quiet
+静かにするモードです。Error以外にはログを吐きません。ただし、Errorが途中で発生しても出来る限り解析を続けようとします。
+
+</li>
+</ul>
+<p>
+なお -f, &#8212;fake
+オプション、これらは忘れてください。蟻の巣を暴くには不要なオプションです。
+これらのオプションは、ant-hive -h で参照することが出来ます。
+</p>
+<pre>
+ ant-hive.
+ --- Search ant's hive deeply, and reveal their world map. :)
+ [usage]
+ ruby ant-hive.rb [-d|-q] -g
+                  [-d|-q] -H HIVELIST
+                  [-d|-q] -r PATH [-M MAPLIST] [-R ROUTELIST]
+                  -h
+ ------------------------------------------------------------
+ ant-hive.exe also works. thanks to exerb.
+
+     -d, --debug                      Debug log appears
+     -f, --fake                       Only run for generating exerb recipe.
+     -g, --gui                        Launch GUI window
+     -h, --help                       Show this message
+     -H, --HIVES= LIST                Run with hive-LIST defined at ant-hive.xml
+     -M, --MAP= LIST                  Generates static map(s) for files in LIST
+     -q, --quiet                      Quiet mode.Only displays errors.
+     -r, --root_dir= PATH             root directory for Ants
+     -R, --ROUTE= LIST                Generates dynamic route(s) for &quot;target@file&quot; in LIST
+</pre>
+
+    </div>
+
+
+   </div>
+
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>
